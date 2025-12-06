@@ -42,7 +42,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  /* let Wix / browser handle overflow */
+  /* overflow-x: hidden;  <-- remove this */
 }
 
 body {
@@ -51,6 +52,9 @@ body {
   color: var(--text-main);
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+
+  /* make sure content is taller than viewport so scrolling always exists */
+  min-height: 120vh;
 }
 
 /* Page wrapper */
@@ -1072,19 +1076,21 @@ function updateLanguage() {
 }
 
 langButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const lang = btn.dataset.lang;
-    if (lang === currentLang) return;
-    currentLang = lang;
+  header.addEventListener('click', () => {
+  const isOpen = item.classList.contains('open');
 
-    langButtons.forEach(b => {
-      b.classList.toggle('active', b.dataset.lang === currentLang);
-    });
-
-    updateLanguage();
+  // Close others
+  accordionItems.forEach(other => {
+    if (other !== item) other.classList.remove('open');
   });
-});
 
+  // Toggle current
+  if (!isOpen) {
+    item.classList.add('open');
+  } else {
+    item.classList.remove('open');
+  }
+});
 // Initialize language on load
 updateLanguage();
 
