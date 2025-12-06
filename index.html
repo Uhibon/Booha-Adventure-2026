@@ -202,11 +202,16 @@ body {
   transform: rotate(90deg);
 }
 
+/* IMPORTANT: use a big CSS max-height so content always expands fully */
 .ac-body {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
   padding: 0 18px;
+  transition: max-height 0.35s ease;
+}
+
+.accordion-item.open .ac-body {
+  max-height: 3000px; /* safely larger than any panel */
 }
 
 .ac-inner {
@@ -1163,26 +1168,21 @@ const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
 
 accordions.forEach(item => {
   const header = item.querySelector('.ac-header');
-  const body = item.querySelector('.ac-body');
 
   header.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+
     // auto-collapse others
     accordions.forEach(other => {
-      if (other !== item && other.classList.contains('open')) {
+      if (other !== item) {
         other.classList.remove('open');
-        const otherBody = other.querySelector('.ac-body');
-        if (otherBody) otherBody.style.maxHeight = 0;
       }
     });
 
-    const isOpen = item.classList.contains('open');
-
     if (isOpen) {
       item.classList.remove('open');
-      body.style.maxHeight = 0;
     } else {
       item.classList.add('open');
-      body.style.maxHeight = body.scrollHeight + "px";
       // Only trigger sparkles on larger screens for smoother mobile performance
       if (!isSmallScreen) {
         triggerSparkle(header);
@@ -1191,7 +1191,7 @@ accordions.forEach(item => {
   });
 });
 
-/* Twinkle generator – lighter and local to header for smoother mobile/desktop */
+/* Twinkle generator – desktop only now */
 function triggerSparkle(header) {
   const rect = header.getBoundingClientRect();
   const headerWidth = rect.width;
@@ -1253,11 +1253,6 @@ langButtons.forEach(btn => {
       if (text !== undefined) {
         el.textContent = text;
       }
-    });
-
-    // adjust open accordion height after language switch
-    document.querySelectorAll('.accordion-item.open .ac-body').forEach(body => {
-      body.style.maxHeight = body.scrollHeight + "px";
     });
   });
 });
