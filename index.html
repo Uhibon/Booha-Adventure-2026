@@ -54,6 +54,10 @@ body {
   background: radial-gradient(circle at top, var(--bg2) 0, var(--bg1) 60%);
   color: var(--text-main);
   line-height: 1.75;
+
+  /* smoother, safer mobile scroll inside iframe */
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Slightly tighter padding on phones + lighter visuals */
@@ -202,7 +206,7 @@ body {
   transform: rotate(90deg);
 }
 
-/* IMPORTANT: use a big CSS max-height so content always expands fully */
+/* Accordion body: big CSS max-height so content always expands fully */
 .ac-body {
   max-height: 0;
   overflow: hidden;
@@ -244,7 +248,7 @@ body {
   display: none;
 }
 
-/* Twinkles – now lightweight and local to header */
+/* Twinkles – lightweight and local to header */
 .twinkle {
   position: absolute;
   pointer-events: none;
@@ -329,7 +333,7 @@ body {
 
   <!-- 1. Booha Adventure -->
   <div class="accordion-item level-adv">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="ブーハー・アドベンチャーとは？"
@@ -385,7 +389,7 @@ body {
 
   <!-- 2. Booha-riculum -->
   <div class="accordion-item level-ricu">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="ブーハーリキュラムとは？"
@@ -471,7 +475,7 @@ body {
 
   <!-- 3. Required items -->
   <div class="accordion-item level-items">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="レッスンに必要なもの"
@@ -531,7 +535,7 @@ body {
 
   <!-- 4. Results -->
   <div class="accordion-item level-results">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="英検・TOEICの目安"
@@ -626,7 +630,7 @@ body {
 
   <!-- 5. Common problems -->
   <div class="accordion-item level-problems">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="よくあるつまずき"
@@ -699,7 +703,7 @@ body {
 
   <!-- 6. Preschool -->
   <div class="accordion-item level-preschool">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="幼児クラス（未就学）"
@@ -769,7 +773,7 @@ body {
 
   <!-- 7. ES 1–3 -->
   <div class="accordion-item level-es1">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="小学1〜3年クラス"
@@ -848,7 +852,7 @@ body {
 
   <!-- 8. ES 4–6 -->
   <div class="accordion-item level-es2">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="小学4〜6年クラス"
@@ -929,7 +933,7 @@ body {
 
   <!-- 9. JHS -->
   <div class="accordion-item level-jhs">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="中学生クラス"
@@ -1014,7 +1018,7 @@ body {
 
   <!-- 10. HS -->
   <div class="accordion-item level-hs">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="高校生クラス"
@@ -1101,7 +1105,7 @@ body {
 
   <!-- 11. Adults -->
   <div class="accordion-item level-adult">
-    <button class="ac-header">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel i18n"
           data-ja="大人クラス"
@@ -1169,7 +1173,10 @@ const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
 accordions.forEach(item => {
   const header = item.querySelector('.ac-header');
 
-  header.addEventListener('click', () => {
+  header.addEventListener('click', (event) => {
+    // Prevent any default button / form behavior inside Wix or other wrappers
+    event.preventDefault();
+
     const isOpen = item.classList.contains('open');
 
     // auto-collapse others
