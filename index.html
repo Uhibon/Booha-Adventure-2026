@@ -54,6 +54,7 @@ body {
   min-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 /* Language radios (global JP/EN toggle) */
@@ -67,6 +68,7 @@ body {
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 16px 160px;
+  touch-action: pan-y;
 }
 
 @media (max-width: 768px) {
@@ -162,7 +164,6 @@ body {
   border-radius: var(--radius);
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.12);
-  overflow: hidden;
 }
 
 /* Hide the checkboxes (accordion controls) */
@@ -202,7 +203,7 @@ body {
   transition: transform 0.2s ease;
 }
 
-/* Body */
+/* Body (default closed) */
 .ac-body {
   display: none;
   padding: 0 18px;
@@ -254,6 +255,25 @@ body {
 .level-jhs .ac-header { color: var(--c-jhs); }
 .level-hs .ac-header { color: var(--c-hs); }
 .level-adult .ac-header { color: var(--c-adult); }
+
+/* ---------- MOBILE/TABLET FALLBACK ----------
+   On mobile & tablets, disable accordion behavior
+   and show everything open for smooth scrolling. */
+@media (max-width: 1024px) {
+  .accordion-item input[type="checkbox"] {
+    display: none;              /* hide controls completely */
+  }
+  .ac-header {
+    cursor: default;            /* no "clickable" cursor */
+  }
+  .ac-icon {
+    display: none;              /* hide the arrows */
+  }
+  .ac-body {
+    display: block !important;  /* everything always open */
+    padding-bottom: 12px;
+  }
+}
 </style>
 </head>
 <body>
