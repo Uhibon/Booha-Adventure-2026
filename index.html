@@ -33,7 +33,7 @@
   --radius: 16px;
 }
 
-/* Basic layout – no scroll hacks */
+/* Reset & base layout */
 * {
   box-sizing: border-box;
 }
@@ -42,44 +42,35 @@ html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100vh;   /* always at least full screen */
-  overflow-x: hidden;  /* no horizontal scroll */
+  overflow-x: hidden;
 }
 
 body {
-  padding: 40px 16px 100px; /* extra bottom padding for scroll comfort */
   font-family: "Noto Sans JP", sans-serif;
-  background: radial-gradient(circle at top, var(--bg2) 0, var(--bg1) 60%);
+  background: #050814;
   color: var(--text-main);
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
-}
-
-@media (max-width: 768px) {
-  body {
-    padding: 28px 14px 96px;
-  }
-}
-
-/* Language radio inputs (hidden) */
-.lang-input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
 }
 
 /* Page wrapper */
 .page {
   max-width: 960px;
   margin: 0 auto;
-  min-height: 100vh;   /* stretch content region to full height */
+  padding: 32px 16px 80px;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 24px 14px 96px;
+  }
 }
 
 /* Title */
 .title-box {
   text-align: center;
-  margin-bottom: 18px;
-  padding: 20px 10px 8px;
+  margin-bottom: 24px;
+  padding: 12px 8px 4px;
 }
 
 .title-main {
@@ -101,12 +92,12 @@ body {
   color: var(--text-soft);
 }
 
-/* Language toggle buttons (CSS-only) */
+/* Language toggle */
 .lang-toggle {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin: 18px 0 24px;
+  margin: 16px 0 24px;
 }
 
 .lang-btn {
@@ -121,70 +112,38 @@ body {
   text-align: center;
 }
 
-/* Default language visibility */
-.lang-ja,
-.lang-en {
-  display: block;
-}
-
-/* When Japanese is selected */
-#lang-ja:checked ~ .page .lang-ja {
-  display: block;
-}
-#lang-ja:checked ~ .page .lang-en {
-  display: none;
-}
-#lang-ja:checked ~ .page label[for="lang-ja"] {
+.lang-btn.active {
   background: #ffffff;
   color: #111222;
   border-color: #ffffff;
 }
-#lang-ja:checked ~ .page label[for="lang-en"] {
-  background: rgba(0,0,0,0.35);
-  color: var(--text-soft);
-}
 
-/* When English is selected */
-#lang-en:checked ~ .page .lang-en {
-  display: block;
-}
-#lang-en:checked ~ .page .lang-ja {
-  display: none;
-}
-#lang-en:checked ~ .page label[for="lang-en"] {
-  background: #ffffff;
-  color: #111222;
-  border-color: #ffffff;
-}
-#lang-en:checked ~ .page label[for="lang-ja"] {
-  background: rgba(0,0,0,0.35);
-  color: var(--text-soft);
-}
+/* Language blocks */
+.lang-ja { display: block; }
+.lang-en { display: none; } /* default JP */
 
-/* Accordion via <details> – no overflow, no shadows */
-details.accordion-item {
+/* Accordion container */
+.accordion-item {
   margin-bottom: 14px;
   border-radius: var(--radius);
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.12);
 }
 
-/* Summary as header */
-details.accordion-item summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 14px 48px 14px 18px;
+/* Header button */
+.ac-header {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
-  position: relative;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: var(--radius);
 }
 
-/* Remove default marker */
-details.accordion-item summary::-webkit-details-marker {
-  display: none;
-}
-
-/* Labels inside header */
 .ac-labels {
   display: flex;
   flex-direction: column;
@@ -202,29 +161,28 @@ details.accordion-item summary::-webkit-details-marker {
   color: var(--text-soft);
 }
 
-/* Arrow icon using pseudo-element */
-details.accordion-item summary::after {
-  content: "▶";
+/* Simple arrow icon */
+.ac-icon {
   font-size: 1.4rem;
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%) rotate(0deg);
   transition: transform 0.2s ease;
-  color: currentColor;
 }
 
-details.accordion-item[open] summary::after {
-  transform: translateY(-50%) rotate(90deg);
+.accordion-item.open .ac-icon {
+  transform: rotate(90deg);
 }
 
 /* Body */
 .ac-body {
+  display: none;
   padding: 0 18px 12px;
 }
 
+.accordion-item.open .ac-body {
+  display: block;
+}
+
 .ac-inner {
-  padding: 10px 0 18px;
+  padding: 10px 0 4px;
   color: var(--text-soft);
   font-size: 0.93rem;
 }
@@ -246,25 +204,21 @@ details.accordion-item[open] summary::after {
 }
 
 /* Color-coding by section */
-.level-adv summary { color: var(--c-adv); }
-.level-ricu summary { color: var(--c-ricu); }
-.level-items summary { color: var(--c-items); }
-.level-results summary { color: var(--c-results); }
-.level-problems summary { color: var(--c-problems); }
+.level-adv .ac-header { color: var(--c-adv); }
+.level-ricu .ac-header { color: var(--c-ricu); }
+.level-items .ac-header { color: var(--c-items); }
+.level-results .ac-header { color: var(--c-results); }
+.level-problems .ac-header { color: var(--c-problems); }
 
-.level-preschool summary { color: var(--c-preschool); }
-.level-es1 summary { color: var(--c-es1); }
-.level-es2 summary { color: var(--c-es2); }
-.level-jhs summary { color: var(--c-jhs); }
-.level-hs summary { color: var(--c-hs); }
-.level-adult summary { color: var(--c-adult); }
+.level-preschool .ac-header { color: var(--c-preschool); }
+.level-es1 .ac-header { color: var(--c-es1); }
+.level-es2 .ac-header { color: var(--c-es2); }
+.level-jhs .ac-header { color: var(--c-jhs); }
+.level-hs .ac-header { color: var(--c-hs); }
+.level-adult .ac-header { color: var(--c-adult); }
 </style>
 </head>
 <body>
-
-<!-- CSS-only language toggle radios -->
-<input type="radio" name="lang" id="lang-ja" class="lang-input" checked>
-<input type="radio" name="lang" id="lang-en" class="lang-input">
 
 <div class="page">
 
@@ -286,13 +240,13 @@ details.accordion-item[open] summary::after {
 
   <!-- Language toggle -->
   <div class="lang-toggle">
-    <label class="lang-btn" for="lang-ja">日本語</label>
-    <label class="lang-btn" for="lang-en">English</label>
+    <button class="lang-btn active" data-lang="ja">日本語</button>
+    <button class="lang-btn" data-lang="en">English</button>
   </div>
 
   <!-- 1. Booha Adventure -->
-  <details class="accordion-item level-adv">
-    <summary>
+  <div class="accordion-item level-adv">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">ブーハー・アドベンチャーとは？</span>
@@ -303,7 +257,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">Our interactive English world that connects every weekly lesson.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -341,11 +296,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 2. Booha-riculum -->
-  <details class="accordion-item level-ricu">
-    <summary>
+  <div class="accordion-item level-ricu">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">ブーハーリキュラムとは？</span>
@@ -356,7 +311,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">The yearly learning plan, built to cover CEFR A1–B2 through weekly decks.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -424,11 +380,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 3. Required items -->
-  <details class="accordion-item level-items">
-    <summary>
+  <div class="accordion-item level-items">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">レッスンに必要なもの</span>
@@ -439,7 +395,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">A device + English notebook (required for all students)</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -481,11 +438,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 4. Results -->
-  <details class="accordion-item level-results">
-    <summary>
+  <div class="accordion-item level-results">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">英検・TOEICの目安</span>
@@ -496,7 +453,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">What students can realistically expect from steady Booha use.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -573,11 +531,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 5. Common problems -->
-  <details class="accordion-item level-problems">
-    <summary>
+  <div class="accordion-item level-problems">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">よくあるつまずき</span>
@@ -588,7 +546,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">Why some students don’t progress, even when they keep coming to class.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -643,11 +602,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 6. Preschool -->
-  <details class="accordion-item level-preschool">
-    <summary>
+  <div class="accordion-item level-preschool">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">幼児クラス（未就学）</span>
@@ -658,7 +617,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">A time to build writing, listening, and confidence.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -710,11 +670,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 7. ES 1–3 -->
-  <details class="accordion-item level-es1">
-    <summary>
+  <div class="accordion-item level-es1">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">小学1〜3年クラス</span>
@@ -725,7 +685,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">A golden time to build real English habits.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -786,11 +747,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 8. ES 4–6 -->
-  <details class="accordion-item level-es2">
-    <summary>
+  <div class="accordion-item level-es2">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">小学4〜6年クラス</span>
@@ -801,7 +762,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">Building the real base that leads into junior high English.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -864,11 +826,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 9. JHS -->
-  <details class="accordion-item level-jhs">
-    <summary>
+  <div class="accordion-item level-jhs">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">中学生クラス</span>
@@ -879,7 +841,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">More important than juku-style worksheets are strong patterns and weekly speaking.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -946,11 +909,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 10. HS -->
-  <details class="accordion-item level-hs">
-    <summary>
+  <div class="accordion-item level-hs">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">高校生クラス</span>
@@ -961,7 +924,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">Balancing EIKEN, real conversation, and school English.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -1030,11 +994,11 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
   <!-- 11. Adults -->
-  <details class="accordion-item level-adult">
-    <summary>
+  <div class="accordion-item level-adult">
+    <button class="ac-header" type="button">
       <div class="ac-labels">
         <span class="ac-mainlabel">
           <span class="lang-ja">大人クラス</span>
@@ -1045,7 +1009,8 @@ details.accordion-item[open] summary::after {
           <span class="lang-en">Moving away from scripts and into real communication.</span>
         </span>
       </div>
-    </summary>
+      <span class="ac-icon">▶</span>
+    </button>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
@@ -1087,9 +1052,66 @@ details.accordion-item[open] summary::after {
         </div>
       </div>
     </div>
-  </details>
+  </div>
 
 </div><!-- .page -->
+
+<script>
+// Language toggle
+const langButtons = document.querySelectorAll('.lang-btn');
+let currentLang = 'ja';
+
+function updateLanguage() {
+  const showJa = currentLang === 'ja';
+  document.querySelectorAll('.lang-ja').forEach(el => {
+    el.style.display = showJa ? '' : 'none';
+  });
+  document.querySelectorAll('.lang-en').forEach(el => {
+    el.style.display = showJa ? 'none' : '';
+  });
+}
+
+langButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.dataset.lang;
+    if (lang === currentLang) return;
+    currentLang = lang;
+
+    langButtons.forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === currentLang);
+    });
+
+    updateLanguage();
+  });
+});
+
+// Initialize language on load
+updateLanguage();
+
+// Accordion
+const accordionItems = document.querySelectorAll('.accordion-item');
+
+accordionItems.forEach(item => {
+  const header = item.querySelector('.ac-header');
+  header.addEventListener('click', (event) => {
+    event.stopPropagation(); // just in case Wix wraps things
+
+    const isOpen = item.classList.contains('open');
+
+    // Close others
+    accordionItems.forEach(other => {
+      if (other !== item) other.classList.remove('open');
+    });
+
+    // Toggle current
+    if (!isOpen) {
+      item.classList.add('open');
+    } else {
+      item.classList.remove('open');
+    }
+  });
+});
+</script>
 
 </body>
 </html>
