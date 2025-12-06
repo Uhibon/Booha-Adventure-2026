@@ -43,8 +43,10 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: auto;
   min-height: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Layout */
@@ -55,9 +57,9 @@ body {
   color: var(--text-main);
   line-height: 1.75;
 
-  /* smoother, safer mobile scroll inside iframe */
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  /* smoother touch handling inside iframe */
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Slightly tighter padding on phones + lighter visuals */
@@ -206,7 +208,7 @@ body {
   transform: rotate(90deg);
 }
 
-/* Accordion body: big CSS max-height so content always expands fully */
+/* Accordion body */
 .ac-body {
   max-height: 0;
   overflow: hidden;
@@ -215,7 +217,7 @@ body {
 }
 
 .accordion-item.open .ac-body {
-  max-height: 3000px; /* safely larger than any panel */
+  max-height: 9999px; /* safely larger than any panel */
 }
 
 .ac-inner {
