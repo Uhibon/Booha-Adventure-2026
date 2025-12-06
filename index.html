@@ -33,12 +33,18 @@
   --radius: 16px;
 }
 
+/* More stable layout */
+* {
+  box-sizing: border-box;
+}
+
 /* Make page scrollable on mobile (no strange double scroll) */
 html,
 body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 /* Layout */
@@ -48,10 +54,9 @@ body {
   background: radial-gradient(circle at top, var(--bg2) 0, var(--bg1) 60%);
   color: var(--text-main);
   line-height: 1.75;
-  overflow-x: hidden; /* only hide horizontal */
 }
 
-/* Slightly tighter padding on phones */
+/* Slightly tighter padding on phones + lighter visuals */
 @media (max-width: 768px) {
   body {
     padding: 28px 14px 72px;
@@ -122,6 +127,13 @@ body {
   position: relative;
 }
 
+/* Soften shadows on mobile for smoother scroll */
+@media (max-width: 768px) {
+  .accordion-item {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+}
+
 .ac-header {
   width: 100%;
   border: none;
@@ -174,6 +186,16 @@ body {
     0 0 26px rgba(255,255,255,0.25),
     inset 0 0 8px rgba(255,255,255,0.18);
   transform: translateY(-1px);
+}
+
+/* Softer open glow on mobile */
+@media (max-width: 768px) {
+  .accordion-item.open .ac-header {
+    box-shadow:
+      0 0 8px currentColor,
+      0 0 16px rgba(255,255,255,0.2);
+    transform: translateY(-0.5px);
+  }
 }
 
 .accordion-item.open .ac-icon {
@@ -1137,6 +1159,7 @@ body {
 <script>
 /* Accordion logic + auto-collapse + sparkles */
 const accordions = document.querySelectorAll('.accordion-item');
+const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
 
 accordions.forEach(item => {
   const header = item.querySelector('.ac-header');
@@ -1147,7 +1170,8 @@ accordions.forEach(item => {
     accordions.forEach(other => {
       if (other !== item && other.classList.contains('open')) {
         other.classList.remove('open');
-        other.querySelector('.ac-body').style.maxHeight = 0;
+        const otherBody = other.querySelector('.ac-body');
+        if (otherBody) otherBody.style.maxHeight = 0;
       }
     });
 
@@ -1159,20 +1183,21 @@ accordions.forEach(item => {
     } else {
       item.classList.add('open');
       body.style.maxHeight = body.scrollHeight + "px";
-      triggerSparkle(header);
+      // Only trigger sparkles on larger screens for smoother mobile performance
+      if (!isSmallScreen) {
+        triggerSparkle(header);
+      }
     }
   });
 });
 
-/* Twinkle generator – lighter and local to header for smoother mobile */
+/* Twinkle generator – lighter and local to header for smoother mobile/desktop */
 function triggerSparkle(header) {
   const rect = header.getBoundingClientRect();
   const headerWidth = rect.width;
   const headerHeight = rect.height;
 
-  // Fewer sparkles on phones / tablets
-  const isSmall = window.innerWidth <= 768;
-  const sparkleCount = isSmall ? 10 : 22;
+  const sparkleCount = 22;
 
   for (let i = 0; i < sparkleCount; i++) {
     const particle = document.createElement('span');
