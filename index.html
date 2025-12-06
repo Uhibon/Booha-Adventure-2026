@@ -42,12 +42,12 @@ html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
-  overflow-x: hidden; /* no horizontal scroll */
+  min-height: 100vh;   /* always at least full screen */
+  overflow-x: hidden;  /* no horizontal scroll */
 }
 
 body {
-  padding: 40px 16px 80px;
+  padding: 40px 16px 100px; /* extra bottom padding for scroll comfort */
   font-family: "Noto Sans JP", sans-serif;
   background: radial-gradient(circle at top, var(--bg2) 0, var(--bg1) 60%);
   color: var(--text-main);
@@ -57,7 +57,7 @@ body {
 
 @media (max-width: 768px) {
   body {
-    padding: 28px 14px 72px;
+    padding: 28px 14px 96px;
   }
 }
 
@@ -72,6 +72,7 @@ body {
 .page {
   max-width: 960px;
   margin: 0 auto;
+  min-height: 100vh;   /* stretch content region to full height */
 }
 
 /* Title */
