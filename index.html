@@ -33,45 +33,43 @@
   --radius: 16px;
 }
 
-/* More stable layout */
+/* Basic layout – let Wix handle scrolling */
 * {
   box-sizing: border-box;
 }
 
-/* Make page scrollable on mobile (no strange double scroll) */
 html,
 body {
   margin: 0;
   padding: 0;
   height: auto;
-  min-height: 100%;
+  min-height: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: visible;
 }
 
-/* Layout */
 body {
   padding: 40px 16px 80px;
   font-family: "Noto Sans JP", sans-serif;
   background: radial-gradient(circle at top, var(--bg2) 0, var(--bg1) 60%);
   color: var(--text-main);
   line-height: 1.75;
-
-  /* smoother touch handling inside iframe */
-  touch-action: pan-y;
-  -webkit-tap-highlight-color: transparent;
 }
 
-/* Slightly tighter padding on phones */
 @media (max-width: 768px) {
   body {
     padding: 28px 14px 72px;
   }
-  .title-main {
-    font-size: 1.7rem;
-  }
 }
 
+/* Language radio inputs (hidden) */
+.lang-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Page wrapper */
 .page {
   max-width: 960px;
   margin: 0 auto;
@@ -92,17 +90,23 @@ body {
   margin-bottom: 8px;
 }
 
+@media (max-width: 768px) {
+  .title-main {
+    font-size: 1.7rem;
+  }
+}
+
 .title-sub {
   font-size: 0.95rem;
   color: var(--text-soft);
 }
 
-/* Language toggle */
+/* Language toggle buttons (CSS-only) */
 .lang-toggle {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 24px;
+  margin: 18px 0 24px;
 }
 
 .lang-btn {
@@ -114,46 +118,84 @@ body {
   color: var(--text-soft);
   cursor: pointer;
   min-width: 80px;
+  text-align: center;
 }
 
-.lang-btn.active {
+/* Default language visibility (will be overridden by radio state) */
+.lang-ja,
+.lang-en {
+  display: block;
+}
+
+/* When Japanese is selected */
+#lang-ja:checked ~ .page .lang-ja {
+  display: block;
+}
+#lang-ja:checked ~ .page .lang-en {
+  display: none;
+}
+#lang-ja:checked ~ .page label[for="lang-ja"] {
   background: #ffffff;
   color: #111222;
   border-color: #ffffff;
 }
+#lang-ja:checked ~ .page label[for="lang-en"] {
+  background: rgba(0,0,0,0.35);
+  color: var(--text-soft);
+}
 
-/* Accordion */
-.accordion-item {
+/* When English is selected */
+#lang-en:checked ~ .page .lang-en {
+  display: block;
+}
+#lang-en:checked ~ .page .lang-ja {
+  display: none;
+}
+#lang-en:checked ~ .page label[for="lang-en"] {
+  background: #ffffff;
+  color: #111222;
+  border-color: #ffffff;
+}
+#lang-en:checked ~ .page label[for="lang-ja"] {
+  background: rgba(0,0,0,0.35);
+  color: var(--text-soft);
+}
+
+/* Accordion via <details> */
+details.accordion-item {
   margin-bottom: 14px;
   border-radius: var(--radius);
   background: rgba(255,255,255,0.03);
-  overflow: hidden;
   border: 1px solid rgba(255,255,255,0.12);
-  position: relative;
+  overflow: hidden;
 }
 
-/* Lighter shadows (to avoid heavy repaints) */
 @media (min-width: 769px) {
-  .accordion-item {
+  details.accordion-item {
     box-shadow: 0 4px 16px rgba(0,0,0,0.4);
   }
 }
 
-.ac-header {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  border-radius: var(--radius);
-  position: relative; /* anchor sparkles inside header */
-  z-index: 2;
+details.accordion-item[open] {
+  border-color: rgba(255,255,255,0.25);
 }
 
+/* Summary as header */
+details.accordion-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 48px 14px 18px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Remove default marker */
+details.accordion-item summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Labels inside header */
 .ac-labels {
   display: flex;
   flex-direction: column;
@@ -171,38 +213,29 @@ body {
   color: var(--text-soft);
 }
 
-.ac-icon {
+/* Arrow icon using pseudo-element */
+details.accordion-item summary::after {
+  content: "▶";
   font-size: 1.4rem;
-  transform: rotate(0deg);
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
   transition: transform 0.2s ease;
+  color: currentColor;
 }
 
-.accordion-item .ac-header {
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 0 8px rgba(255,255,255,0.04);
+details.accordion-item[open] summary::after {
+  transform: translateY(-50%) rotate(90deg);
 }
 
-.accordion-item.open .ac-header {
-  border-bottom-color: rgba(255,255,255,0.25);
-}
-
-/* Remove transform / heavy glow to avoid jank */
-.accordion-item.open .ac-icon {
-  transform: rotate(90deg);
-}
-
-/* Accordion body — no max-height animation, just show/hide */
+/* Body */
 .ac-body {
-  display: none;
-  padding: 0 18px;
-}
-
-.accordion-item.open .ac-body {
-  display: block;
+  padding: 0 18px 12px;
 }
 
 .ac-inner {
-  padding: 12px 0 18px;
+  padding: 10px 0 18px;
   color: var(--text-soft);
   font-size: 0.93rem;
 }
@@ -223,117 +256,69 @@ body {
   margin-bottom: 4px;
 }
 
-/* Language blocks */
-.lang {
-  margin-bottom: 4px;
-}
-.lang-en {
-  display: none;
-}
+/* Color-coding by section */
+.level-adv summary { color: var(--c-adv); }
+.level-ricu summary { color: var(--c-ricu); }
+.level-items summary { color: var(--c-items); }
+.level-results summary { color: var(--c-results); }
+.level-problems summary { color: var(--c-problems); }
 
-/* Twinkles – keep, but desktop only and light */
-.twinkle {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
-  animation: twinkle 0.9s ease-out forwards;
-  z-index: 1;
-}
-
-.twinkle.dot {
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.twinkle.star::before {
-  content: "";
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: currentColor;
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-}
-
-@keyframes twinkle {
-  0% { opacity: 0; transform: translateY(4px) scale(0.4); }
-  20% { opacity: 1; transform: translateY(0) scale(1); }
-  60% { opacity: 0.8; transform: translateY(-2px) scale(0.9); }
-  100% { opacity: 0; transform: translateY(-4px) scale(0.5); }
-}
-
-/* Colors */
-.level-adv .ac-header { color: var(--c-adv); }
-.level-ricu .ac-header { color: var(--c-ricu); }
-.level-items .ac-header { color: var(--c-items); }
-.level-results .ac-header { color: var(--c-results); }
-.level-problems .ac-header { color: var(--c-problems); }
-
-.level-preschool .ac-header { color: var(--c-preschool); }
-.level-es1 .ac-header { color: var(--c-es1); }
-.level-es2 .ac-header { color: var(--c-es2); }
-.level-jhs .ac-header { color: var(--c-jhs); }
-.level-hs .ac-header { color: var(--c-hs); }
-.level-adult .ac-header { color: var(--c-adult); }
+.level-preschool summary { color: var(--c-preschool); }
+.level-es1 summary { color: var(--c-es1); }
+.level-es2 summary { color: var(--c-es2); }
+.level-jhs summary { color: var(--c-jhs); }
+.level-hs summary { color: var(--c-hs); }
+.level-adult summary { color: var(--c-adult); }
 </style>
 </head>
 <body>
+
+<!-- CSS-only language toggle radios -->
+<input type="radio" name="lang" id="lang-ja" class="lang-input" checked>
+<input type="radio" name="lang" id="lang-en" class="lang-input">
 
 <div class="page">
 
   <!-- Title -->
   <div class="title-box">
-    <div class="title-main i18n"
-      data-ja="The Booha Adventure 2026"
-      data-en="The Booha Adventure 2026">
-      The Booha Adventure 2026
+    <div class="title-main">
+      <span class="lang-ja">The Booha Adventure 2026</span>
+      <span class="lang-en">The Booha Adventure 2026</span>
     </div>
-    <div class="title-sub i18n"
-      data-ja="読むのはすこし長いですが、このページを読めば「ブーハーの使い方」と「伸びるために必要なこと」が分かります。すきま時間に、どうぞゆっくり読んでみてください。"
-      data-en="This page is a bit long, but if you read it, you’ll clearly understand how Booha works and what your child needs to do to improve. Please read it when you have a quiet moment.">
-      読むのはすこし長いですが、このページを読めば「ブーハーの使い方」と「伸びるために必要なこと」が分かります。すきま時間に、どうぞゆっくり読んでみてください。
+    <div class="title-sub">
+      <span class="lang-ja">
+        読むのはすこし長いですが、このページを読めば「ブーハーの使い方」と「伸びるために必要なこと」が分かります。すきま時間に、どうぞゆっくり読んでみてください。
+      </span>
+      <span class="lang-en">
+        This page is a bit long, but if you read it, you’ll clearly understand how Booha works and what your child (or you) need to do to improve. Please read it when you have a quiet moment.
+      </span>
     </div>
   </div>
 
   <!-- Language toggle -->
   <div class="lang-toggle">
-    <button class="lang-btn active" data-lang="ja">日本語</button>
-    <button class="lang-btn" data-lang="en">English</button>
+    <label class="lang-btn" for="lang-ja">日本語</label>
+    <label class="lang-btn" for="lang-en">English</label>
   </div>
 
   <!-- 1. Booha Adventure -->
-  <div class="accordion-item level-adv">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-adv">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="ブーハー・アドベンチャーとは？"
-          data-en="What Is the Booha Adventure?">
-          ブーハー・アドベンチャーとは？
+        <span class="ac-mainlabel">
+          <span class="lang-ja">ブーハー・アドベンチャーとは？</span>
+          <span class="lang-en">What Is the Booha Adventure?</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="毎週のレッスンにつながる、インタラクティブな英語ワールドです。"
-          data-en="Our interactive English world that connects every weekly lesson.">
-          毎週のレッスンにつながる、インタラクティブな英語ワールドです。
+        <span class="ac-sublabel">
+          <span class="lang-ja">毎週のレッスンにつながる、インタラクティブな英語ワールドです。</span>
+          <span class="lang-en">Our interactive English world that connects every weekly lesson.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <p>
             ブーハー・アドベンチャーは、生徒が「名前」と「PINコード」でログインし、毎週の英語学習にアクセスできる世界です。
           </p>
@@ -350,7 +335,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <p>
             The Booha Adventure is our fun, interactive learning world. Students log in with their name and PIN, and the Booha map opens.
           </p>
@@ -367,29 +352,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 2. Booha-riculum -->
-  <div class="accordion-item level-ricu">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-ricu">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="ブーハーリキュラムとは？"
-          data-en="What Is the Booha-riculum?">
-          ブーハーリキュラムとは？
+        <span class="ac-mainlabel">
+          <span class="lang-ja">ブーハーリキュラムとは？</span>
+          <span class="lang-en">What Is the Booha-riculum?</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="ブーハーの木から開く、A1〜B2レベル対応の年間学習プランです。"
-          data-en="The yearly learning plan, built to cover CEFR A1–B2 through weekly decks.">
-          ブーハーの木から開く、A1〜B2レベル対応の年間学習プランです。
+        <span class="ac-sublabel">
+          <span class="lang-ja">ブーハーの木から開く、A1〜B2レベル対応の年間学習プランです。</span>
+          <span class="lang-en">The yearly learning plan, built to cover CEFR A1–B2 through weekly decks.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <p>
             ブーハー・アドベンチャー内の「木のマーク」をタップすると、ブーハーリキュラム（年間学習プラン）が開きます。
           </p>
@@ -418,7 +400,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <p>
             Inside the Booha Adventure, students tap the tree to open the Booha-riculum. This is the yearly learning plan that decides what appears in the weekly decks.
           </p>
@@ -453,29 +435,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 3. Required items -->
-  <div class="accordion-item level-items">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-items">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="レッスンに必要なもの"
-          data-en="What Students Need for Each Lesson">
-          レッスンに必要なもの
+        <span class="ac-mainlabel">
+          <span class="lang-ja">レッスンに必要なもの</span>
+          <span class="lang-en">What Students Need for Each Lesson</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="デバイス＋英語ノート（全生徒・必須です）"
-          data-en="A device + English notebook (required for all students)">
-          デバイス＋英語ノート（全生徒・必須です）
+        <span class="ac-sublabel">
+          <span class="lang-ja">デバイス＋英語ノート（全生徒・必須です）</span>
+          <span class="lang-en">A device + English notebook (required for all students)</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <p><strong>すべてのクラスで、毎回「デバイス１台」と「英語ノート」は必須です。</strong></p>
           <p>
             デバイスがないと、その日のブーハー・アドベンチャー／ブーハーリキュラムの内容にアクセスできません。レッスンはこのシステムを前提に進めているため、
@@ -495,7 +474,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <p><strong>All students need a device and a notebook for every lesson. These are not optional.</strong></p>
           <p>
             The Booha Adventure and Booha-riculum live online. Without a device, students cannot access the weekly decks, games, or audio. The lesson is built around this system, so “no device today” usually means “no access to the real lesson.”
@@ -513,29 +492,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 4. Results -->
-  <div class="accordion-item level-results">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-results">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="英検・TOEICの目安"
-          data-en="Realistic EIKEN & TOEIC Results">
-          英検・TOEICの目安
+        <span class="ac-mainlabel">
+          <span class="lang-ja">英検・TOEICの目安</span>
+          <span class="lang-en">Realistic EIKEN & TOEIC Results</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="週ごとの学習でめざせる、現実的な範囲です。"
-          data-en="What students can realistically expect from steady Booha use.">
-          週ごとの学習でめざせる、現実的な範囲です。
+        <span class="ac-sublabel">
+          <span class="lang-ja">週ごとの学習でめざせる、現実的な範囲です。</span>
+          <span class="lang-en">What students can realistically expect from steady Booha use.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <p>ここに書いてあるのは「毎週ブーハーを使い、話す・書く練習を続けた場合」の現実的な目安です。</p>
 
           <h3>小学生</h3>
@@ -571,7 +547,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <p>
             These are realistic outcomes if a student uses the weekly decks, does the speaking, and plays the game deck regularly. They are not promises, but they show what is normal when students actually use the system.
           </p>
@@ -608,29 +584,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 5. Common problems -->
-  <div class="accordion-item level-problems">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-problems">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="よくあるつまずき"
-          data-en="Common Problems (and What They Mean)">
-          よくあるつまずき
+        <span class="ac-mainlabel">
+          <span class="lang-ja">よくあるつまずき</span>
+          <span class="lang-en">Common Problems (and What They Mean)</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="なぜ伸びないのか、やさしく本当の理由を書いています。"
-          data-en="Why some students don’t progress, even when they keep coming to class.">
-          なぜ伸びないのか、やさしく本当の理由を書いています。
+        <span class="ac-sublabel">
+          <span class="lang-ja">なぜ伸びないのか、やさしく本当の理由を書いています。</span>
+          <span class="lang-en">Why some students don’t progress, even when they keep coming to class.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>1）準備してこない → 話すことがない</h3>
           <p>
             週のカードを見ていないと、そもそも「何を言えばよいか」が分かりません。元気な子でも、まったく知らない内容だと固まってしまいます。
@@ -653,7 +626,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>1. Students don’t come prepared, so they have nothing to say.</h3>
           <p>
             If a child doesn’t preview the weekly cards, they simply don’t know what to talk about. Even confident kids will freeze if nothing is familiar.
@@ -681,29 +654,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 6. Preschool -->
-  <div class="accordion-item level-preschool">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-preschool">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="幼児クラス（未就学）"
-          data-en="Preschool (Pre-Elementary)">
-          幼児クラス（未就学）
+        <span class="ac-mainlabel">
+          <span class="lang-ja">幼児クラス（未就学）</span>
+          <span class="lang-en">Preschool (Pre-Elementary)</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="書く力・聞く力・自信を育てる時期です。"
-          data-en="A time to build writing, listening, and confidence.">
-          書く力・聞く力・自信を育てる時期です。
+        <span class="ac-sublabel">
+          <span class="lang-ja">書く力・聞く力・自信を育てる時期です。</span>
+          <span class="lang-en">A time to build writing, listening, and confidence.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>目標</h3>
           <ul>
             <li>名前・名字を書く</li>
@@ -727,7 +697,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>Goals</h3>
           <ul>
             <li>Write first and last name</li>
@@ -751,29 +721,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 7. ES 1–3 -->
-  <div class="accordion-item level-es1">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-es1">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="小学1〜3年クラス"
-          data-en="Grades 1–3 — Goals & Homework">
-          小学1〜3年クラス
+        <span class="ac-mainlabel">
+          <span class="lang-ja">小学1〜3年クラス</span>
+          <span class="lang-en">Grades 1–3 — Goals & Homework</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="英語の「くせ」をつくる黄金期です。"
-          data-en="A golden time to build real English habits.">
-          英語の「くせ」をつくる黄金期です。
+        <span class="ac-sublabel">
+          <span class="lang-ja">英語の「くせ」をつくる黄金期です。</span>
+          <span class="lang-en">A golden time to build real English habits.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>目標</h3>
           <ul>
             <li>週の単語を理解する</li>
@@ -799,7 +766,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>Goals</h3>
           <p>At this stage, students are building real English habits, not just memorizing.</p>
           <ul>
@@ -830,29 +797,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 8. ES 4–6 -->
-  <div class="accordion-item level-es2">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-es2">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="小学4〜6年クラス"
-          data-en="Grades 4–6 — Goals & Homework">
-          小学4〜6年クラス
+        <span class="ac-mainlabel">
+          <span class="lang-ja">小学4〜6年クラス</span>
+          <span class="lang-en">Grades 4–6 — Goals & Homework</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="中学英語につながる本物の土台をつくる時期です。"
-          data-en="Building the real base that leads into junior high English.">
-          中学英語につながる本物の土台をつくる時期です。
+        <span class="ac-sublabel">
+          <span class="lang-ja">中学英語につながる本物の土台をつくる時期です。</span>
+          <span class="lang-en">Building the real base that leads into junior high English.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>目標</h3>
           <ul>
             <li>単語の正確な理解</li>
@@ -878,7 +842,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>Goals</h3>
           <p>Upper elementary students begin real communication.</p>
           <ul>
@@ -911,29 +875,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 9. JHS -->
-  <div class="accordion-item level-jhs">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-jhs">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="中学生クラス"
-          data-en="Junior High — Goals, Homework & Notes">
-          中学生クラス
+        <span class="ac-mainlabel">
+          <span class="lang-ja">中学生クラス</span>
+          <span class="lang-en">Junior High — Goals, Homework & Notes</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="塾式よりも、話せるパターンと習慣が大事です。"
-          data-en="More important than juku-style worksheets are strong patterns and weekly speaking.">
-          塾式よりも、話せるパターンと習慣が大事です。
+        <span class="ac-sublabel">
+          <span class="lang-ja">塾式よりも、話せるパターンと習慣が大事です。</span>
+          <span class="lang-en">More important than juku-style worksheets are strong patterns and weekly speaking.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>目標</h3>
           <ul>
             <li>よく使う文パターンを身につける</li>
@@ -959,7 +920,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>Goals</h3>
           <p>Many parents think this age needs a “traditional juku” style. They really don’t.</p>
           <p>Junior high students need:</p>
@@ -996,29 +957,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 10. HS -->
-  <div class="accordion-item level-hs">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-hs">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="高校生クラス"
-          data-en="High School — Goals, Homework & Notes">
-          高校生クラス
+        <span class="ac-mainlabel">
+          <span class="lang-ja">高校生クラス</span>
+          <span class="lang-en">High School — Goals, Homework & Notes</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="英検・会話力・学校英語の三本柱。"
-          data-en="Balancing EIKEN, real conversation, and school English.">
-          英検・会話力・学校英語の三本柱。
+        <span class="ac-sublabel">
+          <span class="lang-ja">英検・会話力・学校英語の三本柱。</span>
+          <span class="lang-en">Balancing EIKEN, real conversation, and school English.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>目標</h3>
           <ul>
             <li>意見や理由を英語で言えるようにする</li>
@@ -1044,7 +1002,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>Goals</h3>
           <p>Parents often assume high school English requires heavy juku-style study. It doesn’t — not for communication ability.</p>
           <p>High school students need:</p>
@@ -1083,29 +1041,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- 11. Adults -->
-  <div class="accordion-item level-adult">
-    <button class="ac-header" type="button">
+  <details class="accordion-item level-adult">
+    <summary>
       <div class="ac-labels">
-        <span class="ac-mainlabel i18n"
-          data-ja="大人クラス"
-          data-en="Adults — The Polite Rant & Good News">
-          大人クラス
+        <span class="ac-mainlabel">
+          <span class="lang-ja">大人クラス</span>
+          <span class="lang-en">Adults — The Polite Rant & Good News</span>
         </span>
-        <span class="ac-sublabel i18n"
-          data-ja="台本ではなく「伝え合う」英語へ。"
-          data-en="Moving away from scripts and into real communication.">
-          台本ではなく「伝え合う」英語へ。
+        <span class="ac-sublabel">
+          <span class="lang-ja">台本ではなく「伝え合う」英語へ。</span>
+          <span class="lang-en">Moving away from scripts and into real communication.</span>
         </span>
       </div>
-      <span class="ac-icon">▶</span>
-    </button>
+    </summary>
     <div class="ac-body">
       <div class="ac-inner">
         <!-- JA -->
-        <div class="lang lang-ja">
+        <div class="lang-ja">
           <h3>よくあるつまずき</h3>
           <ul>
             <li>日本語の考え方のまま英語を話そうとする</li>
@@ -1123,7 +1078,7 @@ body {
         </div>
 
         <!-- EN -->
-        <div class="lang lang-en">
+        <div class="lang-en">
           <h3>The common adult problems (the polite rant)</h3>
           <ol>
             <li><strong>Speaking English “like it’s Japanese.”</strong> English and Japanese are not cousins — they are not even neighbors. Using Japanese logic in English makes everything stiff, vague, and unnatural.</li>
@@ -1143,106 +1098,9 @@ body {
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
 </div><!-- .page -->
-
-<script>
-/* Accordion logic + auto-collapse + sparkles */
-const accordions = document.querySelectorAll('.accordion-item');
-const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-
-accordions.forEach(item => {
-  const header = item.querySelector('.ac-header');
-
-  header.addEventListener('click', (event) => {
-    event.preventDefault();
-
-    const isOpen = item.classList.contains('open');
-
-    // auto-collapse others
-    accordions.forEach(other => {
-      if (other !== item) {
-        other.classList.remove('open');
-      }
-    });
-
-    if (isOpen) {
-      item.classList.remove('open');
-    } else {
-      item.classList.add('open');
-      // Only trigger sparkles on larger screens for smoother mobile performance
-      if (!isSmallScreen) {
-        triggerSparkle(header);
-      }
-    }
-  });
-});
-
-/* Twinkle generator – desktop only */
-function triggerSparkle(header) {
-  const rect = header.getBoundingClientRect();
-  const headerWidth = rect.width;
-  const headerHeight = rect.height;
-
-  const sparkleCount = 16;
-
-  for (let i = 0; i < sparkleCount; i++) {
-    const particle = document.createElement('span');
-    const isStar = i > sparkleCount * 0.6;
-    particle.classList.add('twinkle');
-    particle.classList.add(isStar ? 'star' : 'dot');
-
-    const color = getComputedStyle(header).color;
-    particle.style.color = color;
-
-    const offsetX = Math.random() * (headerWidth + 40) - 20;
-    const offsetY = Math.random() * (headerHeight + 20) - 10;
-
-    particle.style.left = offsetX + "px";
-    particle.style.top = offsetY + "px";
-
-    header.appendChild(particle);
-
-    setTimeout(() => {
-      particle.remove();
-    }, 950);
-  }
-}
-
-/* EN/JP toggle + header/title text */
-const langButtons = document.querySelectorAll('.lang-btn');
-let currentLang = 'ja';
-
-langButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const lang = btn.dataset.lang;
-    if (lang === currentLang) return;
-    currentLang = lang;
-
-    langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
-
-    const jaBlocks = document.querySelectorAll('.lang-ja');
-    const enBlocks = document.querySelectorAll('.lang-en');
-
-    jaBlocks.forEach(el => {
-      el.style.display = (currentLang === 'ja') ? 'block' : 'none';
-    });
-
-    enBlocks.forEach(el => {
-      el.style.display = (currentLang === 'en') ? 'block' : 'none';
-    });
-
-    const i18nElems = document.querySelectorAll('.i18n');
-    i18nElems.forEach(el => {
-      const text = el.dataset[currentLang];
-      if (text !== undefined) {
-        el.textContent = text;
-      }
-    });
-  });
-});
-</script>
 
 </body>
 </html>
