@@ -42,6 +42,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 body {
@@ -50,9 +51,9 @@ body {
   color: var(--text-main);
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
-
-  /* Make sure there is always something to scroll */
-  min-height: 200vh;
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Language radios (global JP/EN toggle) */
@@ -164,8 +165,8 @@ body {
   overflow: hidden;
 }
 
-/* Hide the radios (accordion controls) */
-.accordion-item input[type="radio"] {
+/* Hide the checkboxes (accordion controls) */
+.accordion-item input[type="checkbox"] {
   display: none;
 }
 
@@ -203,8 +204,7 @@ body {
 
 /* Body */
 .ac-body {
-  max-height: 0;
-  overflow: hidden;
+  display: none;
   padding: 0 18px;
 }
 
@@ -214,13 +214,13 @@ body {
   font-size: 0.93rem;
 }
 
-/* Open state – when radio is checked */
-.accordion-item input[type="radio"]:checked + .ac-header + .ac-body {
-  max-height: 9999px; /* effectively "auto" */
+/* Open state – when checkbox is checked */
+.accordion-item input[type="checkbox"]:checked + .ac-header + .ac-body {
+  display: block;
   padding-bottom: 12px;
 }
 
-.accordion-item input[type="radio"]:checked + .ac-header .ac-icon {
+.accordion-item input[type="checkbox"]:checked + .ac-header .ac-icon {
   transform: rotate(90deg);
 }
 
@@ -290,7 +290,7 @@ body {
 
     <!-- 1. Booha Adventure -->
     <section class="accordion-item level-adv">
-      <input type="radio" name="ac" id="ac-adv" checked>
+      <input type="checkbox" id="ac-adv" checked>
       <label class="ac-header" for="ac-adv">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -343,7 +343,7 @@ body {
 
     <!-- 2. Booha-riculum -->
     <section class="accordion-item level-ricu">
-      <input type="radio" name="ac" id="ac-ricu">
+      <input type="checkbox" id="ac-ricu">
       <label class="ac-header" for="ac-ricu">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -426,7 +426,7 @@ body {
 
     <!-- 3. Required items -->
     <section class="accordion-item level-items">
-      <input type="radio" name="ac" id="ac-items">
+      <input type="checkbox" id="ac-items">
       <label class="ac-header" for="ac-items">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -483,7 +483,7 @@ body {
 
     <!-- 4. Results -->
     <section class="accordion-item level-results">
-      <input type="radio" name="ac" id="ac-results">
+      <input type="checkbox" id="ac-results">
       <label class="ac-header" for="ac-results">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -575,7 +575,7 @@ body {
 
     <!-- 5. Common problems -->
     <section class="accordion-item level-problems">
-      <input type="radio" name="ac" id="ac-problems">
+      <input type="checkbox" id="ac-problems">
       <label class="ac-header" for="ac-problems">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -645,7 +645,7 @@ body {
 
     <!-- 6. Preschool -->
     <section class="accordion-item level-preschool">
-      <input type="radio" name="ac" id="ac-preschool">
+      <input type="checkbox" id="ac-preschool">
       <label class="ac-header" for="ac-preschool">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -712,7 +712,7 @@ body {
 
     <!-- 7. ES 1–3 -->
     <section class="accordion-item level-es1">
-      <input type="radio" name="ac" id="ac-es1">
+      <input type="checkbox" id="ac-es1">
       <label class="ac-header" for="ac-es1">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -788,7 +788,7 @@ body {
 
     <!-- 8. ES 4–6 -->
     <section class="accordion-item level-es2">
-      <input type="radio" name="ac" id="ac-es2">
+      <input type="checkbox" id="ac-es2">
       <label class="ac-header" for="ac-es2">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -866,7 +866,7 @@ body {
 
     <!-- 9. JHS -->
     <section class="accordion-item level-jhs">
-      <input type="radio" name="ac" id="ac-jhs">
+      <input type="checkbox" id="ac-jhs">
       <label class="ac-header" for="ac-jhs">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -948,7 +948,7 @@ body {
 
     <!-- 10. HS -->
     <section class="accordion-item level-hs">
-      <input type="radio" name="ac" id="ac-hs">
+      <input type="checkbox" id="ac-hs">
       <label class="ac-header" for="ac-hs">
         <div class="ac-labels">
           <span class="ac-mainlabel">
@@ -1032,7 +1032,7 @@ body {
 
     <!-- 11. Adults -->
     <section class="accordion-item level-adult">
-      <input type="radio" name="ac" id="ac-adult">
+      <input type="checkbox" id="ac-adult">
       <label class="ac-header" for="ac-adult">
         <div class="ac-labels">
           <span class="ac-mainlabel">
