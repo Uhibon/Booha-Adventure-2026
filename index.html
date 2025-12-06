@@ -62,7 +62,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Slightly tighter padding on phones + lighter visuals */
+/* Slightly tighter padding on phones */
 @media (max-width: 768px) {
   body {
     padding: 28px 14px 72px;
@@ -128,15 +128,14 @@ body {
   border-radius: var(--radius);
   background: rgba(255,255,255,0.03);
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
   position: relative;
 }
 
-/* Soften shadows on mobile for smoother scroll */
-@media (max-width: 768px) {
+/* Lighter shadows (to avoid heavy repaints) */
+@media (min-width: 769px) {
   .accordion-item {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
   }
 }
 
@@ -153,10 +152,8 @@ body {
   border-radius: var(--radius);
   position: relative; /* anchor sparkles inside header */
   z-index: 2;
-  transition: box-shadow 0.25s, border 0.25s, transform 0.18s ease;
 }
 
-/* align header text left */
 .ac-labels {
   display: flex;
   flex-direction: column;
@@ -177,47 +174,31 @@ body {
 .ac-icon {
   font-size: 1.4rem;
   transform: rotate(0deg);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .accordion-item .ac-header {
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 0 8px rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 8px rgba(255,255,255,0.04);
 }
 
 .accordion-item.open .ac-header {
-  border-width: 2px;
-  box-shadow:
-    0 0 14px currentColor,
-    0 0 26px rgba(255,255,255,0.25),
-    inset 0 0 8px rgba(255,255,255,0.18);
-  transform: translateY(-1px);
+  border-bottom-color: rgba(255,255,255,0.25);
 }
 
-/* Softer open glow on mobile */
-@media (max-width: 768px) {
-  .accordion-item.open .ac-header {
-    box-shadow:
-      0 0 8px currentColor,
-      0 0 16px rgba(255,255,255,0.2);
-    transform: translateY(-0.5px);
-  }
-}
-
+/* Remove transform / heavy glow to avoid jank */
 .accordion-item.open .ac-icon {
   transform: rotate(90deg);
 }
 
-/* Accordion body */
+/* Accordion body — no max-height animation, just show/hide */
 .ac-body {
-  max-height: 0;
-  overflow: hidden;
+  display: none;
   padding: 0 18px;
-  transition: max-height 0.35s ease;
 }
 
 .accordion-item.open .ac-body {
-  max-height: 9999px; /* safely larger than any panel */
+  display: block;
 }
 
 .ac-inner {
@@ -250,7 +231,7 @@ body {
   display: none;
 }
 
-/* Twinkles – lightweight and local to header */
+/* Twinkles – keep, but desktop only and light */
 .twinkle {
   position: absolute;
   pointer-events: none;
@@ -259,7 +240,6 @@ body {
   z-index: 1;
 }
 
-/* smaller sparkles */
 .twinkle.dot {
   width: 2px;
   height: 2px;
@@ -1176,7 +1156,6 @@ accordions.forEach(item => {
   const header = item.querySelector('.ac-header');
 
   header.addEventListener('click', (event) => {
-    // Prevent any default button / form behavior inside Wix or other wrappers
     event.preventDefault();
 
     const isOpen = item.classList.contains('open');
@@ -1200,13 +1179,13 @@ accordions.forEach(item => {
   });
 });
 
-/* Twinkle generator – desktop only now */
+/* Twinkle generator – desktop only */
 function triggerSparkle(header) {
   const rect = header.getBoundingClientRect();
   const headerWidth = rect.width;
   const headerHeight = rect.height;
 
-  const sparkleCount = 22;
+  const sparkleCount = 16;
 
   for (let i = 0; i < sparkleCount; i++) {
     const particle = document.createElement('span');
@@ -1217,7 +1196,6 @@ function triggerSparkle(header) {
     const color = getComputedStyle(header).color;
     particle.style.color = color;
 
-    // Position within/around the header
     const offsetX = Math.random() * (headerWidth + 40) - 20;
     const offsetY = Math.random() * (headerHeight + 20) - 10;
 
@@ -1255,7 +1233,6 @@ langButtons.forEach(btn => {
       el.style.display = (currentLang === 'en') ? 'block' : 'none';
     });
 
-    // Update i18n text (titles, headers, subtitles)
     const i18nElems = document.querySelectorAll('.i18n');
     i18nElems.forEach(el => {
       const text = el.dataset[currentLang];
