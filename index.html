@@ -33,7 +33,7 @@
   --radius: 16px;
 }
 
-/* Basic layout – let Wix handle scrolling */
+/* Basic layout – no scroll hacks */
 * {
   box-sizing: border-box;
 }
@@ -42,10 +42,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: auto;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: visible;
+  min-height: 100%;
+  overflow-x: hidden; /* no horizontal scroll */
 }
 
 body {
@@ -54,6 +52,7 @@ body {
   background: radial-gradient(circle at top, var(--bg2) 0, var(--bg1) 60%);
   color: var(--text-main);
   line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
 }
 
 @media (max-width: 768px) {
@@ -121,7 +120,7 @@ body {
   text-align: center;
 }
 
-/* Default language visibility (will be overridden by radio state) */
+/* Default language visibility */
 .lang-ja,
 .lang-en {
   display: block;
@@ -161,23 +160,12 @@ body {
   color: var(--text-soft);
 }
 
-/* Accordion via <details> */
+/* Accordion via <details> – no overflow, no shadows */
 details.accordion-item {
   margin-bottom: 14px;
   border-radius: var(--radius);
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.12);
-  overflow: hidden;
-}
-
-@media (min-width: 769px) {
-  details.accordion-item {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  }
-}
-
-details.accordion-item[open] {
-  border-color: rgba(255,255,255,0.25);
 }
 
 /* Summary as header */
