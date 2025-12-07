@@ -53,8 +53,8 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch; /* smooth on iOS */
+  touch-action: pan-y;               /* allow vertical scroll on touch */
 }
 
 /* Language radios (global JP/EN toggle) */
@@ -256,22 +256,19 @@ body {
 .level-hs .ac-header { color: var(--c-hs); }
 .level-adult .ac-header { color: var(--c-adult); }
 
-/* ---------- MOBILE/TABLET FALLBACK ----------
-   On mobile & tablets, disable accordion behavior
-   and show everything open for smooth scrolling. */
-@media (max-width: 1024px) {
-  .accordion-item input[type="checkbox"] {
-    display: none;              /* hide controls completely */
-  }
+/* Small touch-friendly tweaks for mobile */
+@media (max-width: 768px) {
   .ac-header {
-    cursor: default;            /* no "clickable" cursor */
+    padding: 14px 16px;
   }
-  .ac-icon {
-    display: none;              /* hide the arrows */
+  .ac-mainlabel {
+    font-size: 1rem;
   }
-  .ac-body {
-    display: block !important;  /* everything always open */
-    padding-bottom: 12px;
+  .ac-sublabel {
+    font-size: 0.8rem;
+  }
+  .ac-inner {
+    font-size: 0.9rem;
   }
 }
 </style>
@@ -1110,6 +1107,76 @@ body {
   </div><!-- .accordion -->
 
 </div><!-- .page -->
+
+<script>
+  // ===== 1. postMessage height sync for Wix =====
+  function sendHeightToParent() {
+    try {
+      var doc = document.documentElement;
+      var body = document.body;
+      var height = Math.max(
+        body.scrollHeight, doc.scrollHeight,
+        body.offsetHeight, doc.offsetHeight,
+        body.clientHeight, doc.clientHeight
+      );
+
+      window.parent.postMessage(
+        {
+          type: 'boohaResize',
+          height: height
+        },
+        '*'
+      );
+    } catch (e) {
+      console.error('sendHeightToParent error:', e);
+    }
+  }
+
+  // ===== 2. Single-open accordion behavior =====
+  function initAccordion() {
+    var checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
+
+    checkboxes.forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        if (cb.checked) {
+          // Close all others
+          checkboxes.forEach(function(other) {
+            if (other !== cb) {
+              other.checked = false;
+            }
+          });
+        }
+        // After any toggle, update height for Wix
+        sendHeightToParent();
+      });
+    });
+  }
+
+  // ===== 3. Watch language toggle too (height changes) =====
+  function initLanguageHeightSync() {
+    var langRadios = document.querySelectorAll('input[name="lang"]');
+    langRadios.forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        // Delay slightly so layout can update, then send height
+        setTimeout(sendHeightToParent, 50);
+      });
+    });
+  }
+
+  // ===== 4. Init on load & handle resize/orientation =====
+  window.addEventListener('load', function() {
+    initAccordion();
+    initLanguageHeightSync();
+    sendHeightToParent();
+    // Re-check after fonts/images settle
+    setTimeout(sendHeightToParent, 500);
+    setTimeout(sendHeightToParent, 1500);
+  });
+
+  window.addEventListener('resize', function() {
+    sendHeightToParent();
+  });
+</script>
 
 </body>
 </html>
