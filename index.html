@@ -55,6 +55,12 @@ body {
   -webkit-overflow-scrolling: touch; /* smooth on iOS */
 }
 
+/* While measuring, show BOTH languages so we get the true max height */
+body.measuring .lang-ja,
+body.measuring .lang-en {
+  display: block !important;
+}
+
 /* Language radios (global JP/EN toggle) */
 #lang-ja,
 #lang-en {
@@ -163,12 +169,22 @@ body {
   border: 1px solid rgba(255,255,255,0.12);
 }
 
-/* Hide the checkboxes (accordion controls) */
-.accordion-item input[type="checkbox"] {
+/* Native details/summary reset + styling */
+.accordion-item details {
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius);
+}
+
+.accordion-item summary {
+  list-style: none;
+}
+
+.accordion-item summary::-webkit-details-marker {
   display: none;
 }
 
-/* Header */
+/* Header (now on <summary>) */
 .ac-header {
   display: flex;
   align-items: center;
@@ -200,9 +216,8 @@ body {
   transition: transform 0.2s ease;
 }
 
-/* Body (default closed) */
+/* Body */
 .ac-body {
-  display: none;
   padding: 0 18px;
 }
 
@@ -212,13 +227,12 @@ body {
   font-size: 0.93rem;
 }
 
-/* Open state – when checkbox is checked */
-.accordion-item input[type="checkbox"]:checked + .ac-header + .ac-body {
-  display: block;
+/* Open state using native details[open] */
+.accordion-item details[open] .ac-body {
   padding-bottom: 12px;
 }
 
-.accordion-item input[type="checkbox"]:checked + .ac-header .ac-icon {
+.accordion-item details[open] .ac-icon {
   transform: rotate(90deg);
 }
 
@@ -252,19 +266,7 @@ body {
 .level-jhs .ac-header { color: var(--c-jhs); }
 .level-hs .ac-header { color: var(--c-hs); }
 .level-adult .ac-header { color: var(--c-adult); }
-  
-/* During measuring, show both languages at once so we get the true max height */
-body.measuring .lang-ja,
-body.measuring .lang-en {
-  display: block !important;
-}
 
-/* While measuring, show BOTH languages so we get the true max height */
-body.measuring .lang-ja,
-body.measuring .lang-en {
-  display: block !important;
-}
-  
 /* Small touch-friendly tweaks for mobile */
 @media (max-width: 768px) {
   .ac-header {
@@ -316,801 +318,812 @@ body.measuring .lang-en {
 
     <!-- 1. Booha Adventure -->
     <section class="accordion-item level-adv">
-      <input type="checkbox" id="ac-adv" checked>
-      <label class="ac-header" for="ac-adv">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">ブーハー・アドベンチャーとは？</span>
-            <span class="lang-en">What Is the Booha Adventure?</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">毎週のレッスンにつながる、インタラクティブな英語ワールドです。</span>
-            <span class="lang-en">Our interactive English world that connects every weekly lesson.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <p>
-              ブーハー・アドベンチャーは、生徒が「名前」と「PINコード」でログインし、毎週の英語学習にアクセスできる世界です。
-            </p>
-            <p>
-              地図には週ごとのチェックポイントがあり、新しい週が始まると光ります。タップすると、その週に使う２つのデッキが開きます。
-            </p>
-            <ul>
-              <li><strong>スタディデッキ</strong>（単語・文・スピーキング質問／すべて音声つき）</li>
-              <li><strong>ゲームデッキ</strong>（６つのブーハーオリジナルゲーム。発音認識つきのゲームもあります）</li>
-            </ul>
-            <p>
-              すべてが「週ごと」に整理されているので、<strong>今週なにを使えばいいかが一目で分かる</strong>ようになっています。
-            </p>
+      <details open>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">ブーハー・アドベンチャーとは？</span>
+              <span class="lang-en">What Is the Booha Adventure?</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">毎週のレッスンにつながる、インタラクティブな英語ワールドです。</span>
+              <span class="lang-en">Our interactive English world that connects every weekly lesson.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <p>
+                ブーハー・アドベンチャーは、生徒が「名前」と「PINコード」でログインし、毎週の英語学習にアクセスできる世界です。
+              </p>
+              <p>
+                地図には週ごとのチェックポイントがあり、新しい週が始まると光ります。タップすると、その週に使う２つのデッキが開きます。
+              </p>
+              <ul>
+                <li><strong>スタディデッキ</strong>（単語・文・スピーキング質問／すべて音声つき）</li>
+                <li><strong>ゲームデッキ</strong>（６つのブーハーオリジナルゲーム。発音認識つきのゲームもあります）</li>
+              </ul>
+              <p>
+                すべてが「週ごと」に整理されているので、<strong>今週なにを使えばいいかが一目で分かる</strong>ようになっています。
+              </p>
+            </div>
 
-          <div class="lang-en">
-            <p>
-              The Booha Adventure is our fun, interactive learning world. Students log in with their name and PIN, and the Booha map opens.
-            </p>
-            <p>
-              The map has weekly checkpoints. When a new week unlocks, the checkpoint glows. Tapping it opens a simple screen with the two decks for that week:
-            </p>
-            <ul>
-              <li><strong>Study Deck</strong> — vocabulary, sentences, and speaking questions (all with audio)</li>
-              <li><strong>Game Deck</strong> — six Booha-only games, including speaking games that accept about 90% pronunciation</li>
-            </ul>
-            <p>
-              Everything is organized by week, so students always know exactly what to use and never get lost in random materials.
-            </p>
+            <div class="lang-en">
+              <p>
+                The Booha Adventure is our fun, interactive learning world. Students log in with their name and PIN, and the Booha map opens.
+              </p>
+              <p>
+                The map has weekly checkpoints. When a new week unlocks, the checkpoint glows. Tapping it opens a simple screen with the two decks for that week:
+              </p>
+              <ul>
+                <li><strong>Study Deck</strong> — vocabulary, sentences, and speaking questions (all with audio)</li>
+                <li><strong>Game Deck</strong> — six Booha-only games, including speaking games that accept about 90% pronunciation</li>
+              </ul>
+              <p>
+                Everything is organized by week, so students always know exactly what to use and never get lost in random materials.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 2. Booha-riculum -->
     <section class="accordion-item level-ricu">
-      <input type="checkbox" id="ac-ricu">
-      <label class="ac-header" for="ac-ricu">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">ブーハーリキュラムとは？</span>
-            <span class="lang-en">What Is the Booha-riculum?</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">ブーハーの木から開く、A1〜B2レベル対応の年間学習プランです。</span>
-            <span class="lang-en">The yearly learning plan, built to cover CEFR A1–B2 through weekly decks.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <p>
-              ブーハー・アドベンチャー内の「木のマーク」をタップすると、ブーハーリキュラム（年間学習プラン）が開きます。
-            </p>
-            <p>
-              年間の計画はありますが、いつも画面に出るのは<strong>４週間分だけ</strong>です（2月第1週から）。毎週月曜日に新しい週がオープンし、前の週は「クリア済み」として残ります。
-            </p>
-
-            <h3>CEFR（A1〜B2）とは？</h3>
-            <p>
-              CEFR（セファール）は、世界中で使われている「語学レベルのものさし」です。ブーハーリキュラムは、この
-              <strong>A1〜B2</strong>の範囲を、子どもにも大人にも分かりやすく、少しずつステップアップできるようにデザインされています。
-            </p>
-            <ul>
-              <li><strong>A1〜A2：</strong>かんたんな単語・よく使う表現・日常の会話</li>
-              <li><strong>B1〜B2：</strong>自分の意見・理由・説明・ストーリー、少し長めの文や読解に近い内容</li>
-            </ul>
-            <p>
-              毎週のデッキを使っていくと、「気づいたらA1→A2→B1→B2へ進んでいた」という形で、<strong>自然にレベルアップしていく</strong>仕組みになっています。
-            </p>
-
-            <h3>日本の英語とのつながり</h3>
-            <p>
-              ブーハーリキュラムは、英検５級〜２級、学校の教科書、そしてTOEIC 400〜650の土台にあたる英語をカバーしています。<br>
-              「テクニック」ではなく、そのテストのベースになる語彙・文・読解・スピーキング力を育てるカリキュラムです。
-            </p>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">ブーハーリキュラムとは？</span>
+              <span class="lang-en">What Is the Booha-riculum?</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">ブーハーの木から開く、A1〜B2レベル対応の年間学習プランです。</span>
+              <span class="lang-en">The yearly learning plan, built to cover CEFR A1–B2 through weekly decks.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <p>
+                ブーハー・アドベンチャー内の「木のマーク」をタップすると、ブーハーリキュラム（年間学習プラン）が開きます。
+              </p>
+              <p>
+                年間の計画はありますが、いつも画面に出るのは<strong>４週間分だけ</strong>です（2月第1週から）。毎週月曜日に新しい週がオープンし、前の週は「クリア済み」として残ります。
+              </p>
 
-          <div class="lang-en">
-            <p>
-              Inside the Booha Adventure, students tap the tree to open the Booha-riculum. This is the yearly learning plan that decides what appears in the weekly decks.
-            </p>
-            <p>
-              The plan runs all year, but only four weeks are visible at a time (starting from February Week 1). Each Monday, a new week opens, and older weeks become “completed” but stay visible as checkpoints on the map.
-            </p>
+              <h3>CEFR（A1〜B2）とは？</h3>
+              <p>
+                CEFR（セファール）は、世界中で使われている「語学レベルのものさし」です。ブーハーリキュラムは、この
+                <strong>A1〜B2</strong>の範囲を、子どもにも大人にも分かりやすく、少しずつステップアップできるようにデザインされています。
+              </p>
+              <ul>
+                <li><strong>A1〜A2：</strong>かんたんな単語・よく使う表現・日常の会話</li>
+                <li><strong>B1〜B2：</strong>自分の意見・理由・説明・ストーリー、少し長めの文や読解に近い内容</li>
+              </ul>
+              <p>
+                毎週のデッキを使っていくと、「気づいたらA1→A2→B1→B2へ進んでいた」という形で、<strong>自然にレベルアップしていく</strong>仕組みになっています。
+              </p>
 
-            <h3>What does “CEFR A1–B2” mean?</h3>
-            <p>
-              CEFR is an international scale used to describe language level. The Booha-riculum is intentionally designed to teach the language of levels A1–B2 in a simple, progressive way, mostly through speaking and short reading-style tasks.
-            </p>
-            <ul>
-              <li><strong>A1–A2</strong>: simple words, basic patterns, everyday conversation, basic writing</li>
-              <li><strong>B1–B2</strong>: opinions, explanations, stories, longer sentences, and stronger grammar/vocabulary</li>
-            </ul>
-            <p>
-              The idea is not to “jump levels,” but to slowly and steadily move from A1 → A2 → B1 → B2 by using the weekly decks. Students often don’t notice the level name, but they feel, “Oh, I can say more this year than last year.”
-            </p>
+              <h3>日本の英語とのつながり</h3>
+              <p>
+                ブーハーリキュラムは、英検５級〜２級、学校の教科書、そしてTOEIC 400〜650の土台にあたる英語をカバーしています。<br>
+                「テクニック」ではなく、そのテストのベースになる語彙・文・読解・スピーキング力を育てるカリキュラムです。
+              </p>
+            </div>
 
-            <h3>How it connects to Japanese English</h3>
-            <p>
-              The Booha-riculum directly supports:
-            </p>
-            <ul>
-              <li>EIKEN 5–2</li>
-              <li>Junior high and high school textbook English</li>
-              <li>The language needed for TOEIC 400–650</li>
-            </ul>
-            <p>
-              Instead of teaching test tricks, the focus is on the real language those tests are built on. That way, when students see EIKEN or TOEIC questions, they’re meeting English they already know how to use in speech.
-            </p>
+            <div class="lang-en">
+              <p>
+                Inside the Booha Adventure, students tap the tree to open the Booha-riculum. This is the yearly learning plan that decides what appears in the weekly decks.
+              </p>
+              <p>
+                The plan runs all year, but only four weeks are visible at a time (starting from February Week 1). Each Monday, a new week opens, and older weeks become “completed” but stay visible as checkpoints on the map.
+              </p>
+
+              <h3>What does “CEFR A1–B2” mean?</h3>
+              <p>
+                CEFR is an international scale used to describe language level. The Booha-riculum is intentionally designed to teach the language of levels A1–B2 in a simple, progressive way, mostly through speaking and short reading-style tasks.
+              </p>
+              <ul>
+                <li><strong>A1–A2</strong>: simple words, basic patterns, everyday conversation, basic writing</li>
+                <li><strong>B1–B2</strong>: opinions, explanations, stories, longer sentences, and stronger grammar/vocabulary</li>
+              </ul>
+              <p>
+                The idea is not to “jump levels,” but to slowly and steadily move from A1 → A2 → B1 → B2 by using the weekly decks. Students often don’t notice the level name, but they feel, “Oh, I can say more this year than last year.”
+              </p>
+
+              <h3>How it connects to Japanese English</h3>
+              <p>
+                The Booha-riculum directly supports:
+              </p>
+              <ul>
+                <li>EIKEN 5–2</li>
+                <li>Junior high and high school textbook English</li>
+                <li>The language needed for TOEIC 400–650</li>
+              </ul>
+              <p>
+                Instead of teaching test tricks, the focus is on the real language those tests are built on. That way, when students see EIKEN or TOEIC questions, they’re meeting English they already know how to use in speech.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 3. Required items -->
     <section class="accordion-item level-items">
-      <input type="checkbox" id="ac-items">
-      <label class="ac-header" for="ac-items">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">レッスンに必要なもの</span>
-            <span class="lang-en">What Students Need for Each Lesson</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">デバイス＋英語ノート（全生徒・必須です）</span>
-            <span class="lang-en">A device + English notebook (required for all students)</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <p><strong>すべてのクラスで、毎回「デバイス１台」と「英語ノート」は必須です。</strong></p>
-            <p>
-              デバイスがないと、その日のブーハー・アドベンチャー／ブーハーリキュラムの内容にアクセスできません。レッスンはこのシステムを前提に進めているため、
-              「今日はデバイスなしで大丈夫」ということは基本的にありません。
-            </p>
-            <p>
-              また、できるだけ授業中に「書き写すだけの時間」を長く取りたくないため、
-              <strong>単語を書く作業は、できるだけ家のノートでしてきてください。</strong>
-            </p>
-            <ul>
-              <li>すべての学年：今週の単語を<strong>英語で書き、日本語を横にメモ</strong>する</li>
-              <li>ブーハーの音声を聞きながら、ノートで確認する</li>
-            </ul>
-            <p>
-              家で少しなじんでからレッスンに来ると、クラスでの内容がぐっと使いやすくなり、<strong>「分からない」より「使える」が増えていきます。</strong>
-            </p>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">レッスンに必要なもの</span>
+              <span class="lang-en">What Students Need for Each Lesson</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">デバイス＋英語ノート（全生徒・必須です）</span>
+              <span class="lang-en">A device + English notebook (required for all students)</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <p><strong>すべてのクラスで、毎回「デバイス１台」と「英語ノート」は必須です。</strong></p>
+              <p>
+                デバイスがないと、その日のブーハー・アドベンチャー／ブーハーリキュラムの内容にアクセスできません。レッスンはこのシステムを前提に進めているため、
+                「今日はデバイスなしで大丈夫」ということは基本的にありません。
+              </p>
+              <p>
+                また、できるだけ授業中に「書き写すだけの時間」を長く取りたくないため、
+                <strong>単語を書く作業は、できるだけ家のノートでしてきてください。</strong>
+              </p>
+              <ul>
+                <li>すべての学年：今週の単語を<strong>英語で書き、日本語を横にメモ</strong>する</li>
+                <li>ブーハーの音声を聞きながら、ノートで確認する</li>
+              </ul>
+              <p>
+                家で少しなじんでからレッスンに来ると、クラスでの内容がぐっと使いやすくなり、<strong>「分からない」より「使える」が増えていきます。</strong>
+              </p>
+            </div>
 
-          <div class="lang-en">
-            <p><strong>All students need a device and a notebook for every lesson. These are not optional.</strong></p>
-            <p>
-              The Booha Adventure and Booha-riculum live online. Without a device, students cannot access the weekly decks, games, or audio. The lesson is built around this system, so “no device today” usually means “no access to the real lesson.”
-            </p>
-            <p>
-              I also prefer not to spend class time copying words. Instead, students of all ages should write the weekly vocabulary in their notebook at home — English word with the Japanese meaning next to it.
-            </p>
-            <ul>
-              <li>Write the weekly vocab at home (English + Japanese meaning)</li>
-              <li>Listen to the audio and check the words in the notebook</li>
-            </ul>
-            <p>
-              When students come to class already familiar with the weekly language, the lesson becomes much easier to use. We can spend our time speaking, listening, and thinking in English, not just writing on paper.
-            </p>
+            <div class="lang-en">
+              <p><strong>All students need a device and a notebook for every lesson. These are not optional.</strong></p>
+              <p>
+                The Booha Adventure and Booha-riculum live online. Without a device, students cannot access the weekly decks, games, or audio. The lesson is built around this system, so “no device today” usually means “no access to the real lesson.”
+              </p>
+              <p>
+                I also prefer not to spend class time copying words. Instead, students of all ages should write the weekly vocabulary in their notebook at home — English word with the Japanese meaning next to it.
+              </p>
+              <ul>
+                <li>Write the weekly vocab at home (English + Japanese meaning)</li>
+                <li>Listen to the audio and check the words in the notebook</li>
+              </ul>
+              <p>
+                When students come to class already familiar with the weekly language, the lesson becomes much easier to use. We can spend our time speaking, listening, and thinking in English, not just writing on paper.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 4. Results -->
     <section class="accordion-item level-results">
-      <input type="checkbox" id="ac-results">
-      <label class="ac-header" for="ac-results">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">英検・TOEICの目安</span>
-            <span class="lang-en">Realistic EIKEN & TOEIC Results</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">週ごとの学習でめざせる、現実的な範囲です。</span>
-            <span class="lang-en">What students can realistically expect from steady Booha use.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <p>ここに書いてあるのは「毎週ブーハーを使い、話す・書く練習を続けた場合」の現実的な目安です。</p>
-
-            <h3>小学生</h3>
-            <ul>
-              <li>５級：かんたん</li>
-              <li>４級：無理なく合格</li>
-              <li>３級：小６で十分ねらえる（A1〜A2の単語・文・書く力がつくため）</li>
-            </ul>
-
-            <h3>中学生</h3>
-            <ul>
-              <li>３級〜準２級：標準的な目標</li>
-              <li>２級：よく話す生徒なら十分可能（A2〜B1のスピーキング・リスニング・読解パターンを学ぶため）</li>
-            </ul>
-
-            <h3>高校生</h3>
-            <ul>
-              <li>準２級〜２級：コンスタントに学べば十分ねらえる</li>
-              <li>準１級：毎週しっかり話し、すべての週をこなす生徒なら可能（B1/B2の読解・意見を書く力がつくため）</li>
-            </ul>
-
-            <h3>TOEIC</h3>
-            <ul>
-              <li>中学生：300〜450（まじめに参加した場合）</li>
-              <li>高校生：400〜650（週ごとのブーハーデッキを続けた場合）</li>
-              <li>大人：15〜20分／日で450〜650が現実的。それ以上（700〜）は別途リーディングが必要</li>
-            </ul>
-
-            <p>
-              ブーハーリキュラムは、テストの「テクニック」ではなく、テストの土台となる英語そのもの
-              （単語・文・速さ・自動的な文法・読解パターン・意見表現）を育てます。
-            </p>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">英検・TOEICの目安</span>
+              <span class="lang-en">Realistic EIKEN & TOEIC Results</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">週ごとの学習でめざせる、現実的な範囲です。</span>
+              <span class="lang-en">What students can realistically expect from steady Booha use.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <p>ここに書いてあるのは「毎週ブーハーを使い、話す・書く練習を続けた場合」の現実的な目安です。</p>
 
-          <div class="lang-en">
-            <p>
-              These are realistic outcomes if a student uses the weekly decks, does the speaking, and plays the game deck regularly. They are not promises, but they show what is normal when students actually use the system.
-            </p>
+              <h3>小学生</h3>
+              <ul>
+                <li>５級：かんたん</li>
+                <li>４級：無理なく合格</li>
+                <li>３級：小６で十分ねらえる（A1〜A2の単語・文・書く力がつくため）</li>
+              </ul>
 
-            <h3>EIKEN — Elementary (Grades 1–6)</h3>
-            <ul>
-              <li>EIKEN 5 becomes easy</li>
-              <li>EIKEN 4 becomes comfortable</li>
-              <li>EIKEN 3 is very realistic by Grade 6 (A1–A2 vocab, simple patterns, basic writing)</li>
-            </ul>
+              <h3>中学生</h3>
+              <ul>
+                <li>３級〜準２級：標準的な目標</li>
+                <li>２級：よく話す生徒なら十分可能（A2〜B1のスピーキング・リスニング・読解パターンを学ぶため）</li>
+              </ul>
 
-            <h3>EIKEN — Junior High</h3>
-            <ul>
-              <li>EIKEN 3 → Pre-2 becomes the normal range</li>
-              <li>EIKEN 2 is realistic for strong students who speak often (A2–B1 speaking, listening, and reading-style patterns)</li>
-            </ul>
+              <h3>高校生</h3>
+              <ul>
+                <li>準２級〜２級：コンスタントに学べば十分ねらえる</li>
+                <li>準１級：毎週しっかり話し、すべての週をこなす生徒なら可能（B1/B2の読解・意見を書く力がつくため）</li>
+              </ul>
 
-            <h3>EIKEN — High School</h3>
-            <ul>
-              <li>EIKEN Pre-2 → 2 becomes the expected range</li>
-              <li>EIKEN Pre-1 is possible for motivated students who complete all weekly speaking and writing</li>
-            </ul>
+              <h3>TOEIC</h3>
+              <ul>
+                <li>中学生：300〜450（まじめに参加した場合）</li>
+                <li>高校生：400〜650（週ごとのブーハーデッキを続けた場合）</li>
+                <li>大人：15〜20分／日で450〜650が現実的。それ以上（700〜）は別途リーディングが必要</li>
+              </ul>
 
-            <h3>TOEIC</h3>
-            <ul>
-              <li>Junior High: TOEIC 300–450 with real participation</li>
-              <li>High School: TOEIC 400–550 for average students, 550–650 for strong, consistent students</li>
-              <li>Adults: TOEIC 450–650 is normal with 15–20 minutes a day; 700+ needs extra reading outside Booha</li>
-            </ul>
+              <p>
+                ブーハーリキュラムは、テストの「テクニック」ではなく、テストの土台となる英語そのもの
+                （単語・文・速さ・自動的な文法・読解パターン・意見表現）を育てます。
+              </p>
+            </div>
 
-            <p>
-              These results are possible because the Booha-riculum builds the essential skills behind all tests: A1–B2 vocabulary, sentence control, speaking speed and confidence, automatic grammar patterns, reading-style questions, and opinion phrases.
-            </p>
+            <div class="lang-en">
+              <p>
+                These are realistic outcomes if a student uses the weekly decks, does the speaking, and plays the game deck regularly. They are not promises, but they show what is normal when students actually use the system.
+              </p>
+
+              <h3>EIKEN — Elementary (Grades 1–6)</h3>
+              <ul>
+                <li>EIKEN 5 becomes easy</li>
+                <li>EIKEN 4 becomes comfortable</li>
+                <li>EIKEN 3 is very realistic by Grade 6 (A1–A2 vocab, simple patterns, basic writing)</li>
+              </ul>
+
+              <h3>EIKEN — Junior High</h3>
+              <ul>
+                <li>EIKEN 3 → Pre-2 becomes the normal range</li>
+                <li>EIKEN 2 is realistic for strong students who speak often (A2–B1 speaking, listening, and reading-style patterns)</li>
+              </ul>
+
+              <h3>EIKEN — High School</h3>
+              <ul>
+                <li>EIKEN Pre-2 → 2 becomes the expected range</li>
+                <li>EIKEN Pre-1 is possible for motivated students who complete all weekly speaking and writing</li>
+              </ul>
+
+              <h3>TOEIC</h3>
+              <ul>
+                <li>Junior High: TOEIC 300–450 with real participation</li>
+                <li>High School: TOEIC 400–550 for average students, 550–650 for strong, consistent students</li>
+                <li>Adults: TOEIC 450–650 is normal with 15–20 minutes a day; 700+ needs extra reading outside Booha</li>
+              </ul>
+
+              <p>
+                These results are possible because the Booha-riculum builds the essential skills behind all tests: A1–B2 vocabulary, sentence control, speaking speed and confidence, automatic grammar patterns, reading-style questions, and opinion phrases.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 5. Common problems -->
     <section class="accordion-item level-problems">
-      <input type="checkbox" id="ac-problems">
-      <label class="ac-header" for="ac-problems">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">よくあるつまずき</span>
-            <span class="lang-en">Common Problems (and What They Mean)</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">なぜ伸びないのか、やさしく本当の理由を書いています。</span>
-            <span class="lang-en">Why some students don’t progress, even when they keep coming to class.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>1）準備してこない → 話すことがない</h3>
-            <p>
-              週のカードを見ていないと、そもそも「何を言えばよいか」が分かりません。元気な子でも、まったく知らない内容だと固まってしまいます。
-            </p>
-
-            <h3>2）レッスン直前・車の中でまとめてやる</h3>
-            <p>
-              レッスン直前や車の中の練習は、「やった気」にはなりますが、頭に残りにくいタイミングです。ストレッチを終わったあとに一瞬だけするようなもので、
-              脳が落ち着いて整理できません。
-            </p>
-
-            <h3>3）家で練習しない → ずっと“ゼロ”のまま</h3>
-            <p>
-              家でまったく練習しない場合、その子の「スタート地点」は毎回同じになります。授業では前回と同じ内容をやり直すことが多くなり、
-              本人も「できないまま」で自信をなくしやすくなります。
-            </p>
-            <p>
-              少しの家庭学習でも、「前回の自分より一歩前にいる状態」でレッスンに来ることができます。その小さな差が、１年後・２年後には大きな差になります。
-            </p>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">よくあるつまずき</span>
+              <span class="lang-en">Common Problems (and What They Mean)</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">なぜ伸びないのか、やさしく本当の理由を書いています。</span>
+              <span class="lang-en">Why some students don’t progress, even when they keep coming to class.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>1）準備してこない → 話すことがない</h3>
+              <p>
+                週のカードを見ていないと、そもそも「何を言えばよいか」が分かりません。元気な子でも、まったく知らない内容だと固まってしまいます。
+              </p>
 
-          <div class="lang-en">
-            <h3>1. Students don’t come prepared, so they have nothing to say.</h3>
-            <p>
-              If a child doesn’t preview the weekly cards, they simply don’t know what to talk about. Even confident kids will freeze if nothing is familiar.
-            </p>
-            <p>A little preview = something to say. No preview = silence.</p>
+              <h3>2）レッスン直前・車の中でまとめてやる</h3>
+              <p>
+                レッスン直前や車の中の練習は、「やった気」にはなりますが、頭に残りにくいタイミングです。ストレッチを終わったあとに一瞬だけするようなもので、
+                脳が落ち着いて整理できません。
+              </p>
 
-            <h3>2. Last-minute practice doesn’t work.</h3>
-            <p>
-              Practicing right before class or in the car feels helpful, but it’s too rushed for the brain to save anything. It’s like trying to stretch after running — the timing is wrong.
-            </p>
-            <p>
-              To build real confidence, students need small, calm, repeatable practice at home. Even 3 minutes the day before works much better than cramming.
-            </p>
+              <h3>3）家で練習しない → ずっと“ゼロ”のまま</h3>
+              <p>
+                家でまったく練習しない場合、その子の「スタート地点」は毎回同じになります。授業では前回と同じ内容をやり直すことが多くなり、
+                本人も「できないまま」で自信をなくしやすくなります。
+              </p>
+              <p>
+                少しの家庭学習でも、「前回の自分より一歩前にいる状態」でレッスンに来ることができます。その小さな差が、１年後・２年後には大きな差になります。
+              </p>
+            </div>
 
-            <h3>3. Students who never practice stay at zero.</h3>
-            <p>
-              If a child never practices at home, they stay in the same place. They cannot show new progress, so in class we must review the same material again and again.
-            </p>
-            <p>
-              Not because they’re “bad,” but because the brain cannot grow without tiny, regular practice. This leads to repeating the same answers, repeating the same questions, staying stuck at the same level, and losing confidence because they can’t perform.
-            </p>
-            <p>
-              The good news: even 3–5 minutes of practice helps students remember faster, speak more, feel proud, move to new content each week, and enjoy class much more.
-            </p>
+            <div class="lang-en">
+              <h3>1. Students don’t come prepared, so they have nothing to say.</h3>
+              <p>
+                If a child doesn’t preview the weekly cards, they simply don’t know what to talk about. Even confident kids will freeze if nothing is familiar.
+              </p>
+              <p>A little preview = something to say. No preview = silence.</p>
+
+              <h3>2. Last-minute practice doesn’t work.</h3>
+              <p>
+                Practicing right before class or in the car feels helpful, but it’s too rushed for the brain to save anything. It’s like trying to stretch after running — the timing is wrong.
+              </p>
+              <p>
+                To build real confidence, students need small, calm, repeatable practice at home. Even 3 minutes the day before works much better than cramming.
+              </p>
+
+              <h3>3. Students who never practice stay at zero.</h3>
+              <p>
+                If a child never practices at home, they stay in the same place. They cannot show new progress, so in class we must review the same material again and again.
+              </p>
+              <p>
+                Not because they’re “bad,” but because the brain cannot grow without tiny, regular practice. This leads to repeating the same answers, repeating the same questions, staying stuck at the same level, and losing confidence because they can’t perform.
+              </p>
+              <p>
+                The good news: even 3–5 minutes of practice helps students remember faster, speak more, feel proud, move to new content each week, and enjoy class much more.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 6. Preschool -->
     <section class="accordion-item level-preschool">
-      <input type="checkbox" id="ac-preschool">
-      <label class="ac-header" for="ac-preschool">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">幼児クラス（未就学）</span>
-            <span class="lang-en">Preschool (Pre-Elementary)</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">書く力・聞く力・自信を育てる時期です。</span>
-            <span class="lang-en">A time to build writing, listening, and confidence.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>目標</h3>
-            <ul>
-              <li>名前・名字を書く</li>
-              <li>ABC（大文字・小文字）を書く</li>
-              <li>したじき質問に元気に答える</li>
-            </ul>
-
-            <h3>家庭学習（5分以内）</h3>
-            <ul>
-              <li>名前を書く練習</li>
-              <li>ABCをなぞる</li>
-              <li>したじき質問の音声を聞く</li>
-            </ul>
-
-            <h3>よくある問題</h3>
-            <ul>
-              <li>恥ずかしくて声が小さくなる</li>
-              <li>ABCを覚えていない</li>
-              <li>予習なし → 何も言えない</li>
-            </ul>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">幼児クラス（未就学）</span>
+              <span class="lang-en">Preschool (Pre-Elementary)</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">書く力・聞く力・自信を育てる時期です。</span>
+              <span class="lang-en">A time to build writing, listening, and confidence.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>目標</h3>
+              <ul>
+                <li>名前・名字を書く</li>
+                <li>ABC（大文字・小文字）を書く</li>
+                <li>したじき質問に元気に答える</li>
+              </ul>
 
-          <div class="lang-en">
-            <h3>Goals</h3>
-            <ul>
-              <li>Write first and last name</li>
-              <li>Write uppercase and lowercase ABC</li>
-              <li>Answer the “shitajiki” questions confidently</li>
-            </ul>
+              <h3>家庭学習（5分以内）</h3>
+              <ul>
+                <li>名前を書く練習</li>
+                <li>ABCをなぞる</li>
+                <li>したじき質問の音声を聞く</li>
+              </ul>
 
-            <h3>Home practice (under 5 minutes)</h3>
-            <ul>
-              <li>Practice writing their name</li>
-              <li>Trace the alphabet</li>
-              <li>Listen to the question audio</li>
-            </ul>
+              <h3>よくある問題</h3>
+              <ul>
+                <li>恥ずかしくて声が小さくなる</li>
+                <li>ABCを覚えていない</li>
+                <li>予習なし → 何も言えない</li>
+              </ul>
+            </div>
 
-            <h3>Common issues</h3>
-            <ul>
-              <li>Too shy to speak loudly</li>
-              <li>Doesn’t remember ABC</li>
-              <li>No preview → nothing to say</li>
-            </ul>
+            <div class="lang-en">
+              <h3>Goals</h3>
+              <ul>
+                <li>Write first and last name</li>
+                <li>Write uppercase and lowercase ABC</li>
+                <li>Answer the “shitajiki” questions confidently</li>
+              </ul>
+
+              <h3>Home practice (under 5 minutes)</h3>
+              <ul>
+                <li>Practice writing their name</li>
+                <li>Trace the alphabet</li>
+                <li>Listen to the question audio</li>
+              </ul>
+
+              <h3>Common issues</h3>
+              <ul>
+                <li>Too shy to speak loudly</li>
+                <li>Doesn’t remember ABC</li>
+                <li>No preview → nothing to say</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 7. ES 1–3 -->
     <section class="accordion-item level-es1">
-      <input type="checkbox" id="ac-es1">
-      <label class="ac-header" for="ac-es1">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">小学1〜3年クラス</span>
-            <span class="lang-en">Grades 1–3 — Goals & Homework</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">英語の「くせ」をつくる黄金期です。</span>
-            <span class="lang-en">A golden time to build real English habits.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>目標</h3>
-            <ul>
-              <li>週の単語を理解する</li>
-              <li>かんたんな文で答える</li>
-              <li>スピーキングに自信をつける</li>
-              <li>英語ノートを使う習慣をつける</li>
-            </ul>
-
-            <h3>宿題（5〜10分）</h3>
-            <ul>
-              <li>単語を書く（英語→日本語）</li>
-              <li>スタディデッキの音声を聞く</li>
-              <li>文カードを読む</li>
-              <li>質問1〜2こを声に出して練習する</li>
-            </ul>
-
-            <h3>よくある問題</h3>
-            <ul>
-              <li>予習なし → 話せない</li>
-              <li>車内だけの練習 → 記憶に残らない</li>
-              <li>単語を書かない → 意味が覚えられない</li>
-            </ul>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">小学1〜3年クラス</span>
+              <span class="lang-en">Grades 1–3 — Goals & Homework</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">英語の「くせ」をつくる黄金期です。</span>
+              <span class="lang-en">A golden time to build real English habits.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>目標</h3>
+              <ul>
+                <li>週の単語を理解する</li>
+                <li>かんたんな文で答える</li>
+                <li>スピーキングに自信をつける</li>
+                <li>英語ノートを使う習慣をつける</li>
+              </ul>
 
-          <div class="lang-en">
-            <h3>Goals</h3>
-            <p>At this stage, students are building real English habits, not just memorizing.</p>
-            <ul>
-              <li>Recognize and understand the weekly vocabulary</li>
-              <li>Use simple sentences in class</li>
-              <li>Answer the weekly speaking questions</li>
-              <li>Build confidence speaking to the teacher</li>
-              <li>Keep a small English notebook at home</li>
-            </ul>
+              <h3>宿題（5〜10分）</h3>
+              <ul>
+                <li>単語を書く（英語→日本語）</li>
+                <li>スタディデッキの音声を聞く</li>
+                <li>文カードを読む</li>
+                <li>質問1〜2こを声に出して練習する</li>
+              </ul>
 
-            <h3>Homework (5–10 minutes)</h3>
-            <ul>
-              <li>Write the weekly vocabulary in their notebook (English word + Japanese meaning)</li>
-              <li>Listen to the Study Deck audio</li>
-              <li>Review the sentence cards</li>
-              <li>Practice answering 1–2 speaking questions</li>
-            </ul>
-            <p>
-              If students write the vocabulary at home, they don’t need to spend class time writing. Class time is for speaking, not copying.
-            </p>
+              <h3>よくある問題</h3>
+              <ul>
+                <li>予習なし → 話せない</li>
+                <li>車内だけの練習 → 記憶に残らない</li>
+                <li>単語を書かない → 意味が覚えられない</li>
+              </ul>
+            </div>
 
-            <h3>Common problems</h3>
-            <ul>
-              <li>Students arrive without previewing → they have nothing to say</li>
-              <li>They don’t write the vocab → they don’t remember the words</li>
-              <li>They practice in the car or right before class → too rushed to stick</li>
-            </ul>
+            <div class="lang-en">
+              <h3>Goals</h3>
+              <p>At this stage, students are building real English habits, not just memorizing.</p>
+              <ul>
+                <li>Recognize and understand the weekly vocabulary</li>
+                <li>Use simple sentences in class</li>
+                <li>Answer the weekly speaking questions</li>
+                <li>Build confidence speaking to the teacher</li>
+                <li>Keep a small English notebook at home</li>
+              </ul>
+
+              <h3>Homework (5–10 minutes)</h3>
+              <ul>
+                <li>Write the weekly vocabulary in their notebook (English word + Japanese meaning)</li>
+                <li>Listen to the Study Deck audio</li>
+                <li>Review the sentence cards</li>
+                <li>Practice answering 1–2 speaking questions</li>
+              </ul>
+              <p>
+                If students write the vocabulary at home, they don’t need to spend class time writing. Class time is for speaking, not copying.
+              </p>
+
+              <h3>Common problems</h3>
+              <ul>
+                <li>Students arrive without previewing → they have nothing to say</li>
+                <li>They don’t write the vocab → they don’t remember the words</li>
+                <li>They practice in the car or right before class → too rushed to stick</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 8. ES 4–6 -->
     <section class="accordion-item level-es2">
-      <input type="checkbox" id="ac-es2">
-      <label class="ac-header" for="ac-es2">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">小学4〜6年クラス</span>
-            <span class="lang-en">Grades 4–6 — Goals & Homework</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">中学英語につながる本物の土台をつくる時期です。</span>
-            <span class="lang-en">Building the real base that leads into junior high English.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>目標</h3>
-            <ul>
-              <li>単語の正確な理解</li>
-              <li>長めの文で答える</li>
-              <li>かんたんな意見を言う</li>
-              <li>英語ノートを継続する</li>
-            </ul>
-
-            <h3>宿題（10〜12分）</h3>
-            <ul>
-              <li>単語を書く（英語→日本語）</li>
-              <li>文・質問カードを復習する</li>
-              <li>声に出して答えを練習する</li>
-              <li>英語日記（3〜4文）を書く</li>
-            </ul>
-
-            <h3>よくある問題</h3>
-            <ul>
-              <li>予習なし → 話せず固まる</li>
-              <li>単語を書かない → 意味があいまいなまま</li>
-              <li>車内だけ → ほとんど定着しない</li>
-            </ul>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">小学4〜6年クラス</span>
+              <span class="lang-en">Grades 4–6 — Goals & Homework</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">中学英語につながる本物の土台をつくる時期です。</span>
+              <span class="lang-en">Building the real base that leads into junior high English.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>目標</h3>
+              <ul>
+                <li>単語の正確な理解</li>
+                <li>長めの文で答える</li>
+                <li>かんたんな意見を言う</li>
+                <li>英語ノートを継続する</li>
+              </ul>
 
-          <div class="lang-en">
-            <h3>Goals</h3>
-            <p>Upper elementary students begin real communication.</p>
-            <ul>
-              <li>Understand and use weekly vocabulary</li>
-              <li>Build longer, clearer sentences</li>
-              <li>Answer speaking questions confidently</li>
-              <li>Begin expressing simple opinions</li>
-              <li>Maintain a consistent English notebook at home</li>
-            </ul>
+              <h3>宿題（10〜12分）</h3>
+              <ul>
+                <li>単語を書く（英語→日本語）</li>
+                <li>文・質問カードを復習する</li>
+                <li>声に出して答えを練習する</li>
+                <li>英語日記（3〜4文）を書く</li>
+              </ul>
 
-            <h3>Homework (10–12 minutes)</h3>
-            <ul>
-              <li>Write the weekly vocabulary (English + Japanese)</li>
-              <li>Review the sentence and question decks</li>
-              <li>Practice saying the weekly answers out loud</li>
-              <li>Keep a short diary (3–4 simple sentences per week)</li>
-            </ul>
-            <p>
-              Writing the vocab at home saves class time and lets us use the lesson for real speaking practice.
-            </p>
+              <h3>よくある問題</h3>
+              <ul>
+                <li>予習なし → 話せず固まる</li>
+                <li>単語を書かない → 意味があいまいなまま</li>
+                <li>車内だけ → ほとんど定着しない</li>
+              </ul>
+            </div>
 
-            <h3>Common problems</h3>
-            <ul>
-              <li>Students don’t preview → they freeze during speaking</li>
-              <li>Students don’t write the vocab → they don’t know the meanings</li>
-              <li>Students arrive with “no idea” what this week is about</li>
-              <li>Cramming in the car → no memory, no confidence</li>
-              <li>No diary → they forget patterns quickly</li>
-            </ul>
+            <div class="lang-en">
+              <h3>Goals</h3>
+              <p>Upper elementary students begin real communication.</p>
+              <ul>
+                <li>Understand and use weekly vocabulary</li>
+                <li>Build longer, clearer sentences</li>
+                <li>Answer speaking questions confidently</li>
+                <li>Begin expressing simple opinions</li>
+                <li>Maintain a consistent English notebook at home</li>
+              </ul>
+
+              <h3>Homework (10–12 minutes)</h3>
+              <ul>
+                <li>Write the weekly vocabulary (English + Japanese)</li>
+                <li>Review the sentence and question decks</li>
+                <li>Practice saying the weekly answers out loud</li>
+                <li>Keep a short diary (3–4 simple sentences per week)</li>
+              </ul>
+              <p>
+                Writing the vocab at home saves class time and lets us use the lesson for real speaking practice.
+              </p>
+
+              <h3>Common problems</h3>
+              <ul>
+                <li>Students don’t preview → they freeze during speaking</li>
+                <li>Students don’t write the vocab → they don’t know the meanings</li>
+                <li>Students arrive with “no idea” what this week is about</li>
+                <li>Cramming in the car → no memory, no confidence</li>
+                <li>No diary → they forget patterns quickly</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 9. JHS -->
     <section class="accordion-item level-jhs">
-      <input type="checkbox" id="ac-jhs">
-      <label class="ac-header" for="ac-jhs">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">中学生クラス</span>
-            <span class="lang-en">Junior High — Goals, Homework & Notes</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">塾式よりも、話せるパターンと習慣が大事です。</span>
-            <span class="lang-en">More important than juku-style worksheets are strong patterns and weekly speaking.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>目標</h3>
-            <ul>
-              <li>よく使う文パターンを身につける</li>
-              <li>毎週のスピーキング習慣をつくる</li>
-              <li>英検３級〜準２級をめざす</li>
-              <li>学校英語を分かりやすくする</li>
-            </ul>
-
-            <h3>宿題（10〜15分）</h3>
-            <ul>
-              <li>単語を書く（英語→日本語）</li>
-              <li>スタディデッキ（単語→文→質問）を復習する</li>
-              <li>声に出して答える練習をする</li>
-              <li>英語日記（4〜5文）を書く</li>
-            </ul>
-
-            <h3>よくある問題</h3>
-            <ul>
-              <li>予習ゼロ → 返答できない</li>
-              <li>直前まとめ → ほとんど残らない</li>
-              <li>日記なし → 文パターンが増えない</li>
-            </ul>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">中学生クラス</span>
+              <span class="lang-en">Junior High — Goals, Homework & Notes</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">塾式よりも、話せるパターンと習慣が大事です。</span>
+              <span class="lang-en">More important than juku-style worksheets are strong patterns and weekly speaking.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>目標</h3>
+              <ul>
+                <li>よく使う文パターンを身につける</li>
+                <li>毎週のスピーキング習慣をつくる</li>
+                <li>英検３級〜準２級をめざす</li>
+                <li>学校英語を分かりやすくする</li>
+              </ul>
 
-          <div class="lang-en">
-            <h3>Goals</h3>
-            <p>Many parents think this age needs a “traditional juku” style. They really don’t.</p>
-            <p>Junior high students need:</p>
-            <ul>
-              <li>Strong patterns they can use</li>
-              <li>Weekly speaking practice</li>
-              <li>Consistent review</li>
-              <li>Confidence answering questions</li>
-              <li>Exposure to real English, not just worksheets</li>
-            </ul>
-            <p>
-              The Booha-riculum is already designed for EIKEN 3 → Pre-2, school tests, solid reading and speaking foundations, and pre-TOEIC skills (300–450).
-            </p>
+              <h3>宿題（10〜15分）</h3>
+              <ul>
+                <li>単語を書く（英語→日本語）</li>
+                <li>スタディデッキ（単語→文→質問）を復習する</li>
+                <li>声に出して答える練習をする</li>
+                <li>英語日記（4〜5文）を書く</li>
+              </ul>
 
-            <h3>Homework (10–15 minutes)</h3>
-            <ul>
-              <li>Write the weekly vocabulary (English + Japanese) in their notebook</li>
-              <li>Review the Study Deck (vocab → sentences → questions)</li>
-              <li>Say the weekly answers out loud</li>
-              <li>Keep a simple weekly English diary (4–5 sentences)</li>
-              <li>Optional: play 1–2 Game Deck activities</li>
-            </ul>
-            <p>
-              When students write vocab at home, we can use class time for real speaking, not copying.
-            </p>
+              <h3>よくある問題</h3>
+              <ul>
+                <li>予習ゼロ → 返答できない</li>
+                <li>直前まとめ → ほとんど残らない</li>
+                <li>日記なし → 文パターンが増えない</li>
+              </ul>
+            </div>
 
-            <h3>Common problems</h3>
-            <ul>
-              <li>Students preview nothing → they come in “zero” and freeze</li>
-              <li>Last-minute cramming → nothing sticks</li>
-              <li>No diary → patterns don’t build</li>
-              <li>No weekly review → we repeat the same content as last lesson</li>
-            </ul>
+            <div class="lang-en">
+              <h3>Goals</h3>
+              <p>Many parents think this age needs a “traditional juku” style. They really don’t.</p>
+              <p>Junior high students need:</p>
+              <ul>
+                <li>Strong patterns they can use</li>
+                <li>Weekly speaking practice</li>
+                <li>Consistent review</li>
+                <li>Confidence answering questions</li>
+                <li>Exposure to real English, not just worksheets</li>
+              </ul>
+              <p>
+                The Booha-riculum is already designed for EIKEN 3 → Pre-2, school tests, solid reading and speaking foundations, and pre-TOEIC skills (300–450).
+              </p>
+
+              <h3>Homework (10–15 minutes)</h3>
+              <ul>
+                <li>Write the weekly vocabulary (English + Japanese) in their notebook</li>
+                <li>Review the Study Deck (vocab → sentences → questions)</li>
+                <li>Say the weekly answers out loud</li>
+                <li>Keep a simple weekly English diary (4–5 sentences)</li>
+                <li>Optional: play 1–2 Game Deck activities</li>
+              </ul>
+              <p>
+                When students write vocab at home, we can use class time for real speaking, not copying.
+              </p>
+
+              <h3>Common problems</h3>
+              <ul>
+                <li>Students preview nothing → they come in “zero” and freeze</li>
+                <li>Last-minute cramming → nothing sticks</li>
+                <li>No diary → patterns don’t build</li>
+                <li>No weekly review → we repeat the same content as last lesson</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 10. HS -->
     <section class="accordion-item level-hs">
-      <input type="checkbox" id="ac-hs">
-      <label class="ac-header" for="ac-hs">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">高校生クラス</span>
-            <span class="lang-en">High School — Goals, Homework & Notes</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">英検・会話力・学校英語の三本柱。</span>
-            <span class="lang-en">Balancing EIKEN, real conversation, and school English.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>目標</h3>
-            <ul>
-              <li>意見や理由を英語で言えるようにする</li>
-              <li>長めの文をまとめて話せるようにする</li>
-              <li>英検準２級〜２級レベルをねらう</li>
-              <li>TOEIC 400〜650の土台をつくる</li>
-            </ul>
-
-            <h3>宿題（12〜20分）</h3>
-            <ul>
-              <li>単語を書く（英語→日本語）</li>
-              <li>文・質問カードを声に出して読む</li>
-              <li>英語日記（5〜8文）を書く：意見もふくめて</li>
-              <li>ゲームデッキで復習する</li>
-            </ul>
-
-            <h3>よくある問題</h3>
-            <ul>
-              <li>予習なし → ほとんど話せない</li>
-              <li>車内だけ → 記憶に残らない</li>
-              <li>日記を書かない → 長期的に伸びない</li>
-            </ul>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">高校生クラス</span>
+              <span class="lang-en">High School — Goals, Homework & Notes</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">英検・会話力・学校英語の三本柱。</span>
+              <span class="lang-en">Balancing EIKEN, real conversation, and school English.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>目標</h3>
+              <ul>
+                <li>意見や理由を英語で言えるようにする</li>
+                <li>長めの文をまとめて話せるようにする</li>
+                <li>英検準２級〜２級レベルをねらう</li>
+                <li>TOEIC 400〜650の土台をつくる</li>
+              </ul>
 
-          <div class="lang-en">
-            <h3>Goals</h3>
-            <p>Parents often assume high school English requires heavy juku-style study. It doesn’t — not for communication ability.</p>
-            <p>High school students need:</p>
-            <ul>
-              <li>Stronger speaking patterns</li>
-              <li>Opinion phrases</li>
-              <li>Longer sentence control</li>
-              <li>Listening fluency</li>
-              <li>Habit-based practice</li>
-              <li>Test-connected vocabulary</li>
-            </ul>
-            <p>
-              The Booha-riculum already supports EIKEN Pre-2 → 2, TOEIC 400–650, high school tests, and B1/B2 speaking and reading skills.
-            </p>
+              <h3>宿題（12〜20分）</h3>
+              <ul>
+                <li>単語を書く（英語→日本語）</li>
+                <li>文・質問カードを声に出して読む</li>
+                <li>英語日記（5〜8文）を書く：意見もふくめて</li>
+                <li>ゲームデッキで復習する</li>
+              </ul>
 
-            <h3>Homework (12–20 minutes)</h3>
-            <ul>
-              <li>Write weekly vocabulary (English + Japanese)</li>
-              <li>Review sentences and questions</li>
-              <li>Say answers out loud (fluency > perfection)</li>
-              <li>Keep an English diary (5–8 sentences, opinion encouraged)</li>
-              <li>Play the Game Deck when possible</li>
-            </ul>
-            <p>
-              This builds real-life English and supports both school and test scores.
-            </p>
+              <h3>よくある問題</h3>
+              <ul>
+                <li>予習なし → ほとんど話せない</li>
+                <li>車内だけ → 記憶に残らない</li>
+                <li>日記を書かない → 長期的に伸びない</li>
+              </ul>
+            </div>
 
-            <h3>Common problems</h3>
-            <ul>
-              <li>Students show up without previewing → they cannot speak</li>
-              <li>Doing everything “in the car” → zero memory</li>
-              <li>Not writing vocabulary → weak understanding</li>
-              <li>Not keeping a diary → no long-term progress</li>
-              <li>They stay at “Level 0” → we repeat old content every week</li>
-            </ul>
+            <div class="lang-en">
+              <h3>Goals</h3>
+              <p>Parents often assume high school English requires heavy juku-style study. It doesn’t — not for communication ability.</p>
+              <p>High school students need:</p>
+              <ul>
+                <li>Stronger speaking patterns</li>
+                <li>Opinion phrases</li>
+                <li>Longer sentence control</li>
+                <li>Listening fluency</li>
+                <li>Habit-based practice</li>
+                <li>Test-connected vocabulary</li>
+              </ul>
+              <p>
+                The Booha-riculum already supports EIKEN Pre-2 → 2, TOEIC 400–650, high school tests, and B1/B2 speaking and reading skills.
+              </p>
+
+              <h3>Homework (12–20 minutes)</h3>
+              <ul>
+                <li>Write weekly vocabulary (English + Japanese)</li>
+                <li>Review sentences and questions</li>
+                <li>Say answers out loud (fluency > perfection)</li>
+                <li>Keep an English diary (5–8 sentences, opinion encouraged)</li>
+                <li>Play the Game Deck when possible</li>
+              </ul>
+              <p>
+                This builds real-life English and supports both school and test scores.
+              </p>
+
+              <h3>Common problems</h3>
+              <ul>
+                <li>Students show up without previewing → they cannot speak</li>
+                <li>Doing everything “in the car” → zero memory</li>
+                <li>Not writing vocabulary → weak understanding</li>
+                <li>Not keeping a diary → no long-term progress</li>
+                <li>They stay at “Level 0” → we repeat old content every week</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
     <!-- 11. Adults -->
     <section class="accordion-item level-adult">
-      <input type="checkbox" id="ac-adult">
-      <label class="ac-header" for="ac-adult">
-        <div class="ac-labels">
-          <span class="ac-mainlabel">
-            <span class="lang-ja">大人クラス</span>
-            <span class="lang-en">Adults — The Polite Rant & Good News</span>
-          </span>
-          <span class="ac-sublabel">
-            <span class="lang-ja">台本ではなく「伝え合う」英語へ。</span>
-            <span class="lang-en">Moving away from scripts and into real communication.</span>
-          </span>
-        </div>
-        <span class="ac-icon">▶</span>
-      </label>
-      <div class="ac-body">
-        <div class="ac-inner">
-          <div class="lang-ja">
-            <h3>よくあるつまずき</h3>
-            <ul>
-              <li>日本語の考え方のまま英語を話そうとする</li>
-              <li>完璧な台本を求めてしまう</li>
-              <li>一方的に話すだけになる</li>
-              <li>表現がいつもあいまいになる</li>
-              <li>英語圏の文化にほとんど興味を持たない</li>
-            </ul>
-
-            <h3>グッドニュース</h3>
-            <p>
-              大人には完璧な文法も特別な才能も必要ありません。必要なのは少しの週ごとの努力、短い日記、英語への好奇心、
-              そして「伝え合う姿勢」です。ブーハーリキュラムをきちんと使う大人の生徒さんは、自分で驚くくらい自然に伸びていきます。
-            </p>
+      <details>
+        <summary class="ac-header">
+          <div class="ac-labels">
+            <span class="ac-mainlabel">
+              <span class="lang-ja">大人クラス</span>
+              <span class="lang-en">Adults — The Polite Rant & Good News</span>
+            </span>
+            <span class="ac-sublabel">
+              <span class="lang-ja">台本ではなく「伝え合う」英語へ。</span>
+              <span class="lang-en">Moving away from scripts and into real communication.</span>
+            </span>
           </div>
+          <span class="ac-icon">▶</span>
+        </summary>
+        <div class="ac-body">
+          <div class="ac-inner">
+            <div class="lang-ja">
+              <h3>よくあるつまずき</h3>
+              <ul>
+                <li>日本語の考え方のまま英語を話そうとする</li>
+                <li>完璧な台本を求めてしまう</li>
+                <li>一方的に話すだけになる</li>
+                <li>表現がいつもあいまいになる</li>
+                <li>英語圏の文化にほとんど興味を持たない</li>
+              </ul>
 
-          <div class="lang-en">
-            <h3>The common adult problems (the polite rant)</h3>
-            <ol>
-              <li><strong>Speaking English “like it’s Japanese.”</strong> English and Japanese are not cousins — they are not even neighbors. Using Japanese logic in English makes everything stiff, vague, and unnatural.</li>
-              <li><strong>Speaking from a script instead of having a conversation.</strong> Many adults want “perfect lines,” not real communication. But English is not a performance — it’s a back-and-forth exchange.</li>
-              <li><strong>Talking at the teacher instead of with the teacher.</strong> English is a conversation, not a monologue. Share ideas. Ask real questions. Don’t just tell me obvious facts about Japan.</li>
-              <li><strong>Using vague descriptors for everything.</strong> In Japanese, “kind,” “easy,” and “good” can cover almost anything. In English, vagueness blocks communication. We need detail: what kind, what part, what reason, what example.</li>
-              <li><strong>Trying to learn English without engaging with English-language culture.</strong> You don’t need to “become Western,” but you do need curiosity. No one becomes fluent in another language while feeling zero curiosity about the people who use it.</li>
-            </ol>
+              <h3>グッドニュース</h3>
+              <p>
+                大人には完璧な文法も特別な才能も必要ありません。必要なのは少しの週ごとの努力、短い日記、英語への好奇心、
+                そして「伝え合う姿勢」です。ブーハーリキュラムをきちんと使う大人の生徒さんは、自分で驚くくらい自然に伸びていきます。
+              </p>
+            </div>
 
-            <h3>Good news</h3>
-            <p>
-              Adults don’t need perfect grammar. Adults don’t need “talent.” Adults need small weekly effort, a diary, real curiosity, and a willingness to talk with someone, not at them.
-            </p>
-            <p>
-              Adults who follow the Booha-riculum and practice naturally absolutely improve — usually faster than they expected.
-            </p>
+            <div class="lang-en">
+              <h3>The common adult problems (the polite rant)</h3>
+              <ol>
+                <li><strong>Speaking English “like it’s Japanese.”</strong> English and Japanese are not cousins — they are not even neighbors. Using Japanese logic in English makes everything stiff, vague, and unnatural.</li>
+                <li><strong>Speaking from a script instead of having a conversation.</strong> Many adults want “perfect lines,” not real communication. But English is not a performance — it’s a back-and-forth exchange.</li>
+                <li><strong>Talking at the teacher instead of with the teacher.</strong> English is a conversation, not a monologue. Share ideas. Ask real questions. Don’t just tell me obvious facts about Japan.</li>
+                <li><strong>Using vague descriptors for everything.</strong> In Japanese, “kind,” “easy,” and “good” can cover almost anything. In English, vagueness blocks communication. We need detail: what kind, what part, what reason, what example.</li>
+                <li><strong>Trying to learn English without engaging with English-language culture.</strong> You don’t need to “become Western,” but you do need curiosity. No one becomes fluent in another language while feeling zero curiosity about the people who use it.</li>
+              </ol>
+
+              <h3>Good news</h3>
+              <p>
+                Adults don’t need perfect grammar. Adults don’t need “talent.” Adults need small weekly effort, a diary, real curiosity, and a willingness to talk with someone, not at them.
+              </p>
+              <p>
+                Adults who follow the Booha-riculum and practice naturally absolutely improve — usually faster than they expected.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
 
   </div><!-- .accordion -->
@@ -1119,25 +1132,25 @@ body.measuring .lang-en {
 
 <script>
   // Measure the maximum height ONCE after fonts are ready,
-  // with ALL accordion items open and BOTH languages visible.
+  // with ALL sections open and BOTH languages visible.
   function measureMaxHeightOnce() {
     try {
       const body = document.body;
       const doc = document.documentElement;
 
-      const checkboxes = Array.from(
-        document.querySelectorAll('.accordion-item input[type="checkbox"]')
+      const detailsList = Array.from(
+        document.querySelectorAll('.accordion-item details')
       );
 
-      // Remember which sections are actually open
-      const initialStates = checkboxes.map(cb => cb.checked);
+      // Remember which sections were open
+      const initialStates = detailsList.map(d => d.open);
 
       // Turn on "measuring" mode: both JP & EN visible
       const wasMeasuring = body.classList.contains('measuring');
       body.classList.add('measuring');
 
-      // Open all accordion items to get the true maximum height
-      checkboxes.forEach(cb => { cb.checked = true; });
+      // Open all sections to get the true maximum height
+      detailsList.forEach(d => { d.open = true; });
 
       requestAnimationFrame(function () {
         const height = Math.max(
@@ -1146,14 +1159,14 @@ body.measuring .lang-en {
           body.clientHeight, doc.clientHeight
         );
 
-        // Tell Wix how tall we can ever be (JP + EN, all sections)
+        // Tell Wix how tall we can ever be
         window.parent.postMessage(
           { type: 'boohaResize', height: height },
           '*'
         );
 
-        // Restore original open/closed states
-        checkboxes.forEach((cb, i) => { cb.checked = initialStates[i]; });
+        // Restore open/closed states
+        detailsList.forEach((d, i) => { d.open = initialStates[i]; });
 
         // Turn off measuring mode if we enabled it here
         if (!wasMeasuring) {
@@ -1165,22 +1178,7 @@ body.measuring .lang-en {
     }
   }
 
-  // Single-open accordion (desktop / tablet behavior)
-  function enforceSingleOpen() {
-    const checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
-    checkboxes.forEach(cb => {
-      cb.addEventListener('change', function () {
-        if (cb.checked) {
-          checkboxes.forEach(other => {
-            if (other !== cb) other.checked = false;
-          });
-        }
-      });
-    });
-  }
-
-  // Language toggle: just switch language + scroll to top.
-  // IMPORTANT: no re-measure here, we already sized for JP+EN.
+  // Language toggle: just scroll to top. Height is already sized for JP+EN.
   function initLanguageToggle() {
     const langRadios = document.querySelectorAll('input[name="lang"]');
     langRadios.forEach(radio => {
@@ -1190,12 +1188,9 @@ body.measuring .lang-en {
     });
   }
 
-  // Init once: set up behavior and then measure a single time
   window.addEventListener('load', function () {
-    enforceSingleOpen();
     initLanguageToggle();
 
-    // Wait for web fonts (Cinzel + Noto Sans JP) so height is accurate
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
         setTimeout(measureMaxHeightOnce, 250);
@@ -1205,8 +1200,7 @@ body.measuring .lang-en {
     }
   });
 
-  // IMPORTANT: no window.resize or orientationchange handlers.
-  // We keep the iframe height fixed at the true max so mobile can't freak out.
+  // No resize/orientation listeners: keep iframe height fixed to max.
 </script>
 
 </body>
