@@ -259,6 +259,12 @@ body.measuring .lang-en {
   display: block !important;
 }
 
+/* While measuring, show BOTH languages so we get the true max height */
+body.measuring .lang-ja,
+body.measuring .lang-en {
+  display: block !important;
+}
+  
 /* Small touch-friendly tweaks for mobile */
 @media (max-width: 768px) {
   .ac-header {
@@ -1112,29 +1118,35 @@ body.measuring .lang-en {
 </div><!-- .page -->
 
 <script>
-  // Measure the maximum height ONCE after fonts are ready
-  function measureOnceAfterFonts() {
+  // Measure the maximum height ONCE after fonts are ready,
+  // with ALL accordion items open and BOTH languages visible.
+  function measureMaxHeightOnce() {
     try {
+      const body = document.body;
+      const doc = document.documentElement;
+
       const checkboxes = Array.from(
         document.querySelectorAll('.accordion-item input[type="checkbox"]')
       );
 
-      // Remember which accordion items were open
+      // Remember which sections are actually open
       const initialStates = checkboxes.map(cb => cb.checked);
 
-      // Temporarily open all to get maximum possible height
+      // Turn on "measuring" mode: both JP & EN visible
+      const wasMeasuring = body.classList.contains('measuring');
+      body.classList.add('measuring');
+
+      // Open all accordion items to get the true maximum height
       checkboxes.forEach(cb => { cb.checked = true; });
 
       requestAnimationFrame(function () {
-        const doc = document.documentElement;
-        const body = document.body;
         const height = Math.max(
           body.scrollHeight, doc.scrollHeight,
           body.offsetHeight, doc.offsetHeight,
           body.clientHeight, doc.clientHeight
         );
 
-        // Tell Wix how tall this page can ever be
+        // Tell Wix how tall we can ever be (JP + EN, all sections)
         window.parent.postMessage(
           { type: 'boohaResize', height: height },
           '*'
@@ -1142,13 +1154,18 @@ body.measuring .lang-en {
 
         // Restore original open/closed states
         checkboxes.forEach((cb, i) => { cb.checked = initialStates[i]; });
+
+        // Turn off measuring mode if we enabled it here
+        if (!wasMeasuring) {
+          body.classList.remove('measuring');
+        }
       });
     } catch (e) {
-      console.error('measureOnceAfterFonts error:', e);
+      console.error('measureMaxHeightOnce error:', e);
     }
   }
 
-  // Keep single-open accordion, but no resizing here
+  // Single-open accordion (desktop / tablet behavior)
   function enforceSingleOpen() {
     const checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
     checkboxes.forEach(cb => {
@@ -1157,20 +1174,18 @@ body.measuring .lang-en {
           checkboxes.forEach(other => {
             if (other !== cb) other.checked = false;
           });
-          // Optional: always jump back to top of the page when a new tab opens
-          window.scrollTo(0, 0);
         }
       });
     });
   }
 
-  // Language toggle: just switch text and reset scroll, no re-measure
+  // Language toggle: just switch language + scroll to top.
+  // IMPORTANT: no re-measure here, we already sized for JP+EN.
   function initLanguageToggle() {
     const langRadios = document.querySelectorAll('input[name="lang"]');
     langRadios.forEach(radio => {
       radio.addEventListener('change', function () {
         window.scrollTo(0, 0);
-        // no height re-measure here on purpose
       });
     });
   }
@@ -1180,17 +1195,18 @@ body.measuring .lang-en {
     enforceSingleOpen();
     initLanguageToggle();
 
+    // Wait for web fonts (Cinzel + Noto Sans JP) so height is accurate
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        setTimeout(measureOnceAfterFonts, 250);
+        setTimeout(measureMaxHeightOnce, 250);
       });
     } else {
-      setTimeout(measureOnceAfterFonts, 500);
+      setTimeout(measureMaxHeightOnce, 500);
     }
   });
 
-  // IMPORTANT: no window.resize listener here.
-  // If you really want orientation handling, we can add a VERY light version later.
+  // IMPORTANT: no window.resize or orientationchange handlers.
+  // We keep the iframe height fixed at the true max so mobile can't freak out.
 </script>
 
 </body>
