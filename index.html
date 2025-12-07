@@ -42,7 +42,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -51,11 +51,8 @@ body {
   color: var(--text-main);
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;  /* smooth on iOS */
-  touch-action: pan-y;                /* allow vertical scroll on touch */
-  overscroll-behavior-y: contain;    /* reduce bounce/jank in iframe */
+  -webkit-overflow-scrolling: touch; /* smooth on iOS */
 }
 
 /* Language radios (global JP/EN toggle) */
@@ -69,7 +66,6 @@ body {
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 16px 160px;
-  touch-action: pan-y;
 }
 
 @media (max-width: 768px) {
@@ -179,8 +175,6 @@ body {
   justify-content: space-between;
   padding: 12px 18px;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
 
 .ac-labels {
@@ -1112,112 +1106,78 @@ body {
 </div><!-- .page -->
 
 <script>
-/*
-  Mobile-friendly accordion + Wix height sync
-  - Debounced postMessage to reduce jank
-  - Only one section open at a time
-  - Smooth scroll to opened header
-*/
-
-(function() {
-  let lastHeight = 0;
-  let resizeScheduled = false;
-
-  function measureHeight() {
-    const doc = document.documentElement;
-    const body = document.body;
-    return Math.max(
-      body.scrollHeight, doc.scrollHeight,
-      body.offsetHeight, doc.offsetHeight,
-      body.clientHeight, doc.clientHeight
-    );
-  }
-
-  function postResizeIfNeeded() {
+  // ===== postMessage: measure FULL height once, not on every click =====
+  function measureFullHeightAndNotify() {
     try {
-      const height = measureHeight();
-      // Avoid spammy tiny differences
-      if (Math.abs(height - lastHeight) < 4) return;
-      lastHeight = height;
-
-      window.parent.postMessage(
-        { type: 'boohaResize', height: height },
-        '*'
+      const checkboxes = Array.from(
+        document.querySelectorAll('.accordion-item input[type="checkbox"]')
       );
+
+      // Remember which ones were open
+      const initialStates = checkboxes.map(cb => cb.checked);
+
+      // Temporarily open all to get maximum possible height
+      checkboxes.forEach(cb => { cb.checked = true; });
+
+      // Small delay so layout can update
+      setTimeout(function () {
+        const doc = document.documentElement;
+        const body = document.body;
+        const height = Math.max(
+          body.scrollHeight, doc.scrollHeight,
+          body.offsetHeight, doc.offsetHeight,
+          body.clientHeight, doc.clientHeight
+        );
+
+        window.parent.postMessage(
+          { type: 'boohaResize', height: height },
+          '*'
+        );
+
+        // Restore original open/closed states
+        checkboxes.forEach((cb, i) => { cb.checked = initialStates[i]; });
+      }, 60);
     } catch (e) {
-      console.error('sendHeightToParent error:', e);
+      console.error('measureFullHeightAndNotify error:', e);
     }
   }
 
-  function scheduleHeightUpdate(delay) {
-    if (delay && delay > 0) {
-      setTimeout(function() { scheduleHeightUpdate(0); }, delay);
-      return;
-    }
-    if (resizeScheduled) return;
-    resizeScheduled = true;
-
-    const raf = window.requestAnimationFrame || function(cb){ return setTimeout(cb, 16); };
-
-    raf(function() {
-      resizeScheduled = false;
-      postResizeIfNeeded();
-    });
-  }
-
-  function initAccordion() {
+  // ===== Single-open accordion (only one section open) =====
+  function enforceSingleOpen() {
     const checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
-
-    checkboxes.forEach(function(cb) {
-      cb.addEventListener('change', function() {
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', function () {
         if (cb.checked) {
-          // Close all others
-          checkboxes.forEach(function(other) {
-            if (other !== cb) {
-              other.checked = false;
-            }
+          checkboxes.forEach(other => {
+            if (other !== cb) other.checked = false;
           });
-
-          // Scroll the opened header into view (helps on small screens)
-          const header = cb.nextElementSibling;
-          if (header && header.scrollIntoView) {
-            header.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-              inline: 'nearest'
-            });
-          }
         }
-        // Wait a bit for layout + scroll, then update height
-        scheduleHeightUpdate(120);
       });
     });
   }
 
+  // ===== Re-measure when language changes (JP/EN text size) =====
   function initLanguageHeightSync() {
     const langRadios = document.querySelectorAll('input[name="lang"]');
-    langRadios.forEach(function(radio) {
-      radio.addEventListener('change', function() {
-        // Give layout time to switch language blocks
-        scheduleHeightUpdate(120);
+    langRadios.forEach(radio => {
+      radio.addEventListener('change', function () {
+        setTimeout(measureFullHeightAndNotify, 120);
       });
     });
   }
 
-  window.addEventListener('load', function() {
-    initAccordion();
+  // ===== Init on load & throttle resize =====
+  window.addEventListener('load', function () {
+    enforceSingleOpen();
     initLanguageHeightSync();
-
-    // Initial height + after fonts settle
-    scheduleHeightUpdate(0);
-    scheduleHeightUpdate(400);
-    scheduleHeightUpdate(1200);
+    measureFullHeightAndNotify();
   });
 
-  window.addEventListener('resize', function() {
-    scheduleHeightUpdate(80);
+  let resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measureFullHeightAndNotify, 250);
   });
-})();
 </script>
 
 </body>
