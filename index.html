@@ -252,6 +252,12 @@ body {
 .level-jhs .ac-header { color: var(--c-jhs); }
 .level-hs .ac-header { color: var(--c-hs); }
 .level-adult .ac-header { color: var(--c-adult); }
+  
+/* During measuring, show both languages at once so we get the true max height */
+body.measuring .lang-ja,
+body.measuring .lang-en {
+  display: block !important;
+}
 
 /* Small touch-friendly tweaks for mobile */
 @media (max-width: 768px) {
@@ -1106,43 +1112,52 @@ body {
 </div><!-- .page -->
 
 <script>
-  // ===== postMessage: measure FULL height once, not on every click =====
-  function measureFullHeightAndNotify() {
+  // ===== Measure the TRUE maximum height (all tabs, both languages) and notify Wix once =====
+  function measureMaxHeightAndNotify() {
     try {
+      const body = document.body;
+      const doc = document.documentElement;
+
       const checkboxes = Array.from(
         document.querySelectorAll('.accordion-item input[type="checkbox"]')
       );
 
-      // Remember which ones were open
+      // Remember which accordion items are actually open
       const initialStates = checkboxes.map(cb => cb.checked);
 
-      // Temporarily open all to get maximum possible height
+      // Turn on "measuring" mode → show both JP/EN and open everything
+      const wasMeasuring = body.classList.contains('measuring');
+      body.classList.add('measuring');
       checkboxes.forEach(cb => { cb.checked = true; });
 
-      // Small delay so layout can update
-      setTimeout(function () {
-        const doc = document.documentElement;
-        const body = document.body;
+      // Wait one frame so layout can settle, then measure
+      requestAnimationFrame(function () {
         const height = Math.max(
           body.scrollHeight, doc.scrollHeight,
           body.offsetHeight, doc.offsetHeight,
           body.clientHeight, doc.clientHeight
         );
 
+        // Tell the Wix page how tall we can ever be
         window.parent.postMessage(
           { type: 'boohaResize', height: height },
           '*'
         );
 
-        // Restore original open/closed states
+        // Restore original accordion states
         checkboxes.forEach((cb, i) => { cb.checked = initialStates[i]; });
-      }, 60);
+
+        // Turn off measuring mode if we enabled it here
+        if (!wasMeasuring) {
+          body.classList.remove('measuring');
+        }
+      });
     } catch (e) {
-      console.error('measureFullHeightAndNotify error:', e);
+      console.error('measureMaxHeightAndNotify error:', e);
     }
   }
 
-  // ===== Single-open accordion (only one section open) =====
+  // ===== Single-open accordion (only one section open at a time) =====
   function enforceSingleOpen() {
     const checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
     checkboxes.forEach(cb => {
@@ -1156,27 +1171,35 @@ body {
     });
   }
 
-  // ===== Re-measure when language changes (JP/EN text size) =====
-  function initLanguageHeightSync() {
-    const langRadios = document.querySelectorAll('input[name="lang"]');
-    langRadios.forEach(radio => {
-      radio.addEventListener('change', function () {
-        setTimeout(measureFullHeightAndNotify, 120);
-      });
-    });
-  }
-
-  // ===== Init on load & throttle resize =====
+  // ===== Init: enforce single-open, then measure AFTER fonts are ready =====
   window.addEventListener('load', function () {
     enforceSingleOpen();
-    initLanguageHeightSync();
-    measureFullHeightAndNotify();
+
+    // Wait for web fonts (Cinzel + Noto Sans JP) so the height is correct on mobile
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        // small extra delay for safety
+        setTimeout(measureMaxHeightAndNotify, 250);
+      });
+    } else {
+      // Fallback for older browsers
+      setTimeout(measureMaxHeightAndNotify, 500);
+    }
   });
 
+  // ===== Re-measure on orientation change (phone rotated) just in case =====
   let resizeTimer = null;
+
+  window.addEventListener('orientationchange', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measureMaxHeightAndNotify, 500);
+  });
+
+  // Optional: if you really want to handle window resizes (e.g., tablet split view),
+  // keep this. If not needed, you can safely delete this block.
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(measureFullHeightAndNotify, 250);
+    resizeTimer = setTimeout(measureMaxHeightAndNotify, 600);
   });
 </script>
 
