@@ -1112,52 +1112,43 @@ body.measuring .lang-en {
 </div><!-- .page -->
 
 <script>
-  // ===== Measure the TRUE maximum height (all tabs, both languages) and notify Wix once =====
-  function measureMaxHeightAndNotify() {
+  // Measure the maximum height ONCE after fonts are ready
+  function measureOnceAfterFonts() {
     try {
-      const body = document.body;
-      const doc = document.documentElement;
-
       const checkboxes = Array.from(
         document.querySelectorAll('.accordion-item input[type="checkbox"]')
       );
 
-      // Remember which accordion items are actually open
+      // Remember which accordion items were open
       const initialStates = checkboxes.map(cb => cb.checked);
 
-      // Turn on "measuring" mode → show both JP/EN and open everything
-      const wasMeasuring = body.classList.contains('measuring');
-      body.classList.add('measuring');
+      // Temporarily open all to get maximum possible height
       checkboxes.forEach(cb => { cb.checked = true; });
 
-      // Wait one frame so layout can settle, then measure
       requestAnimationFrame(function () {
+        const doc = document.documentElement;
+        const body = document.body;
         const height = Math.max(
           body.scrollHeight, doc.scrollHeight,
           body.offsetHeight, doc.offsetHeight,
           body.clientHeight, doc.clientHeight
         );
 
-        // Tell the Wix page how tall we can ever be
+        // Tell Wix how tall this page can ever be
         window.parent.postMessage(
           { type: 'boohaResize', height: height },
           '*'
         );
 
-        // Restore original accordion states
+        // Restore original open/closed states
         checkboxes.forEach((cb, i) => { cb.checked = initialStates[i]; });
-
-        // Turn off measuring mode if we enabled it here
-        if (!wasMeasuring) {
-          body.classList.remove('measuring');
-        }
       });
     } catch (e) {
-      console.error('measureMaxHeightAndNotify error:', e);
+      console.error('measureOnceAfterFonts error:', e);
     }
   }
 
-  // ===== Single-open accordion (only one section open at a time) =====
+  // Keep single-open accordion, but no resizing here
   function enforceSingleOpen() {
     const checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
     checkboxes.forEach(cb => {
@@ -1166,41 +1157,40 @@ body.measuring .lang-en {
           checkboxes.forEach(other => {
             if (other !== cb) other.checked = false;
           });
+          // Optional: always jump back to top of the page when a new tab opens
+          window.scrollTo(0, 0);
         }
       });
     });
   }
 
-  // ===== Init: enforce single-open, then measure AFTER fonts are ready =====
+  // Language toggle: just switch text and reset scroll, no re-measure
+  function initLanguageToggle() {
+    const langRadios = document.querySelectorAll('input[name="lang"]');
+    langRadios.forEach(radio => {
+      radio.addEventListener('change', function () {
+        window.scrollTo(0, 0);
+        // no height re-measure here on purpose
+      });
+    });
+  }
+
+  // Init once: set up behavior and then measure a single time
   window.addEventListener('load', function () {
     enforceSingleOpen();
+    initLanguageToggle();
 
-    // Wait for web fonts (Cinzel + Noto Sans JP) so the height is correct on mobile
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        // small extra delay for safety
-        setTimeout(measureMaxHeightAndNotify, 250);
+        setTimeout(measureOnceAfterFonts, 250);
       });
     } else {
-      // Fallback for older browsers
-      setTimeout(measureMaxHeightAndNotify, 500);
+      setTimeout(measureOnceAfterFonts, 500);
     }
   });
 
-  // ===== Re-measure on orientation change (phone rotated) just in case =====
-  let resizeTimer = null;
-
-  window.addEventListener('orientationchange', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(measureMaxHeightAndNotify, 500);
-  });
-
-  // Optional: if you really want to handle window resizes (e.g., tablet split view),
-  // keep this. If not needed, you can safely delete this block.
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(measureMaxHeightAndNotify, 600);
-  });
+  // IMPORTANT: no window.resize listener here.
+  // If you really want orientation handling, we can add a VERY light version later.
 </script>
 
 </body>
