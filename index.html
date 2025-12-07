@@ -53,8 +53,9 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* smooth on iOS */
-  touch-action: pan-y;               /* allow vertical scroll on touch */
+  -webkit-overflow-scrolling: touch;  /* smooth on iOS */
+  touch-action: pan-y;                /* allow vertical scroll on touch */
+  overscroll-behavior-y: contain;    /* reduce bounce/jank in iframe */
 }
 
 /* Language radios (global JP/EN toggle) */
@@ -178,6 +179,8 @@ body {
   justify-content: space-between;
   padding: 12px 18px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .ac-labels {
@@ -1109,22 +1112,36 @@ body {
 </div><!-- .page -->
 
 <script>
-  // ===== 1. postMessage height sync for Wix =====
-  function sendHeightToParent() {
+/*
+  Mobile-friendly accordion + Wix height sync
+  - Debounced postMessage to reduce jank
+  - Only one section open at a time
+  - Smooth scroll to opened header
+*/
+
+(function() {
+  let lastHeight = 0;
+  let resizeScheduled = false;
+
+  function measureHeight() {
+    const doc = document.documentElement;
+    const body = document.body;
+    return Math.max(
+      body.scrollHeight, doc.scrollHeight,
+      body.offsetHeight, doc.offsetHeight,
+      body.clientHeight, doc.clientHeight
+    );
+  }
+
+  function postResizeIfNeeded() {
     try {
-      var doc = document.documentElement;
-      var body = document.body;
-      var height = Math.max(
-        body.scrollHeight, doc.scrollHeight,
-        body.offsetHeight, doc.offsetHeight,
-        body.clientHeight, doc.clientHeight
-      );
+      const height = measureHeight();
+      // Avoid spammy tiny differences
+      if (Math.abs(height - lastHeight) < 4) return;
+      lastHeight = height;
 
       window.parent.postMessage(
-        {
-          type: 'boohaResize',
-          height: height
-        },
+        { type: 'boohaResize', height: height },
         '*'
       );
     } catch (e) {
@@ -1132,51 +1149,75 @@ body {
     }
   }
 
-  // ===== 2. Single-open accordion behavior =====
-  function initAccordion() {
-  var checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
+  function scheduleHeightUpdate(delay) {
+    if (delay && delay > 0) {
+      setTimeout(function() { scheduleHeightUpdate(0); }, delay);
+      return;
+    }
+    if (resizeScheduled) return;
+    resizeScheduled = true;
 
-  checkboxes.forEach(function(cb) {
-    cb.addEventListener('change', function() {
-      if (cb.checked) {
-        // Close all others
-        checkboxes.forEach(function(other) {
-          if (other !== cb) {
-            other.checked = false;
-          }
-        });
-      }
-      // After any toggle, update height for Wix (slight delay so layout settles)
-      setTimeout(sendHeightToParent, 30);
+    const raf = window.requestAnimationFrame || function(cb){ return setTimeout(cb, 16); };
+
+    raf(function() {
+      resizeScheduled = false;
+      postResizeIfNeeded();
     });
-  });
-}
+  }
 
+  function initAccordion() {
+    const checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
 
-  // ===== 3. Watch language toggle too (height changes) =====
-  function initLanguageHeightSync() {
-    var langRadios = document.querySelectorAll('input[name="lang"]');
-    langRadios.forEach(function(radio) {
-      radio.addEventListener('change', function() {
-        // Delay slightly so layout can update, then send height
-        setTimeout(sendHeightToParent, 50);
+    checkboxes.forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        if (cb.checked) {
+          // Close all others
+          checkboxes.forEach(function(other) {
+            if (other !== cb) {
+              other.checked = false;
+            }
+          });
+
+          // Scroll the opened header into view (helps on small screens)
+          const header = cb.nextElementSibling;
+          if (header && header.scrollIntoView) {
+            header.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          }
+        }
+        // Wait a bit for layout + scroll, then update height
+        scheduleHeightUpdate(120);
       });
     });
   }
 
-  // ===== 4. Init on load & handle resize/orientation =====
+  function initLanguageHeightSync() {
+    const langRadios = document.querySelectorAll('input[name="lang"]');
+    langRadios.forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        // Give layout time to switch language blocks
+        scheduleHeightUpdate(120);
+      });
+    });
+  }
+
   window.addEventListener('load', function() {
     initAccordion();
     initLanguageHeightSync();
-    sendHeightToParent();
-    // Re-check after fonts/images settle
-    setTimeout(sendHeightToParent, 500);
-    setTimeout(sendHeightToParent, 1500);
+
+    // Initial height + after fonts settle
+    scheduleHeightUpdate(0);
+    scheduleHeightUpdate(400);
+    scheduleHeightUpdate(1200);
   });
 
   window.addEventListener('resize', function() {
-    sendHeightToParent();
+    scheduleHeightUpdate(80);
   });
+})();
 </script>
 
 </body>
