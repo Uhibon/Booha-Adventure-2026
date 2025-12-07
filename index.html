@@ -1134,23 +1134,24 @@ body {
 
   // ===== 2. Single-open accordion behavior =====
   function initAccordion() {
-    var checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
+  var checkboxes = document.querySelectorAll('.accordion-item input[type="checkbox"]');
 
-    checkboxes.forEach(function(cb) {
-      cb.addEventListener('change', function() {
-        if (cb.checked) {
-          // Close all others
-          checkboxes.forEach(function(other) {
-            if (other !== cb) {
-              other.checked = false;
-            }
-          });
-        }
-        // After any toggle, update height for Wix
-        sendHeightToParent();
-      });
+  checkboxes.forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      if (cb.checked) {
+        // Close all others
+        checkboxes.forEach(function(other) {
+          if (other !== cb) {
+            other.checked = false;
+          }
+        });
+      }
+      // After any toggle, update height for Wix (slight delay so layout settles)
+      setTimeout(sendHeightToParent, 30);
     });
-  }
+  });
+}
+
 
   // ===== 3. Watch language toggle too (height changes) =====
   function initLanguageHeightSync() {
